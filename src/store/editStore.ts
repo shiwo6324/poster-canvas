@@ -20,6 +20,12 @@ export const useEditStore = create<EditStoreState>()(
   ),
 )
 
+// 避免物料选项栏重新渲染
+export const addComponent = (component: IComponent) => {
+  useEditStore.setState((state) => {
+    state.canvas.components.push({ ...component, key: crypto.randomUUID() })
+  })
+}
 function getDefaultCanvas(): ICanvas {
   return {
     title: '未命名',

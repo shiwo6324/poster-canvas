@@ -1,7 +1,6 @@
-import { AppShell, Box, Button, Container, Flex, Grid, Paper, Skeleton, Stack } from '@mantine/core'
+import { AppShell, Box, Button, Stack } from '@mantine/core'
 import classNames from 'classnames'
 
-import React from 'react'
 import { useSidebarTypeStore } from 'src/store/sidebarStore'
 
 export const isTextComponent = 1
@@ -11,7 +10,7 @@ export const isGraphComponent = 3
 const Sidebar = () => {
   const { setType, type } = useSidebarTypeStore()
   return (
-    <AppShell.Navbar p="md" w={'auto'}>
+    <AppShell.Navbar p="md" w={'auto'} pos={'fixed'}>
       <Stack bg="var(--mantine-color-body)" align="center" gap="xs">
         <Button
           className={classNames(type === 1 ? '' : 'text-slate-500')}

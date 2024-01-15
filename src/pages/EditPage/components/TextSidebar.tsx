@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mantine/core'
 import { defaultComponentStyle } from 'src/utils/const'
 import { useSidebarTypeStore } from 'src/store/sidebarStore'
-import { useEditStore } from 'src/store/editStore'
+import { addComponent, useEditStore } from 'src/store/editStore'
 import React from 'react'
 
 const defaultStyle: React.CSSProperties = {
@@ -36,7 +36,6 @@ const settings = [
 
 const TextSidebar = () => {
   const { type } = useSidebarTypeStore((state) => state)
-  const { addComponent } = useEditStore((state) => state)
 
   if (type !== 1) return null
   return (
@@ -62,27 +61,6 @@ const TextSidebar = () => {
           </Box>
         </Grid.Col>
       ))}
-      {/* <Grid.Col span={4}>
-        <Box
-          w={125}
-          h={100}
-          className="flex cursor-pointer 
-                items-center justify-center border border-solid
-                 border-slate-300 hover:border-amber-300 hover:text-amber-300"
-        >
-          标题
-        </Box>
-      </Grid.Col>
-      <Grid.Col span={4}>
-        <Box
-          w={125}
-          h={100}
-          className="flex cursor-pointer items-center justify-center border
-                 border-solid border-slate-300 hover:border-amber-300 hover:text-amber-300"
-        >
-          正文
-        </Box>
-      </Grid.Col> */}
     </Grid>
   )
 }

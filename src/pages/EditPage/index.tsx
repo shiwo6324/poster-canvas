@@ -18,6 +18,9 @@ const EditPage = () => {
           <TextSidebar />
         </Box>
         <Canvas />
+        <div className="relative">
+          <div className="fixed right-0 h-10 w-20 cursor-pointer text-xs">rightsidebar</div>
+        </div>
       </Flex>
     </div>
   )
