@@ -1,25 +1,20 @@
-import { Layout } from 'antd'
 import Login from './Login'
 import { Outlet } from 'react-router-dom'
+import { AppShell, Group } from '@mantine/core'
 
 const RequiredAuth = () => {
-  const { Header } = Layout
-
-  const headerStyle: React.CSSProperties = {
-    textAlign: 'center',
-    color: '#fff',
-    height: 64,
-    paddingInline: 10,
-    lineHeight: '64px',
-    backgroundColor: 'black',
-  }
   return (
-    <Layout>
-      <Header style={headerStyle}>
-        <Login />
-      </Header>
-      <Outlet />
-    </Layout>
+    <AppShell header={{ height: 60 }} navbar={{ width: 300, breakpoint: 'sm' }} padding="xs">
+      <AppShell.Header>
+        <Group h="100%" px="md">
+          <Login />
+        </Group>
+      </AppShell.Header>
+
+      <AppShell.Main px={100} pt={60}>
+        <Outlet />
+      </AppShell.Main>
+    </AppShell>
   )
 }
 
