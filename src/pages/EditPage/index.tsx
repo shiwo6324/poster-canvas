@@ -1,8 +1,8 @@
 import React from 'react'
-import Sidebar from './components/Sidebar'
 import { Box, Flex } from '@mantine/core'
-import TextSidebar from './components/TextSidebar'
-import Canvas from './components/Canvas'
+import Canvas from 'src/components/canvas'
+import Sidebar from 'src/components/sidebar'
+import SidebarList from 'src/components/sidebar-list'
 
 const EditPage = () => {
   return (
@@ -10,14 +10,16 @@ const EditPage = () => {
       <Sidebar />
       <Flex>
         <Box
-          w={300}
+          w={350}
           style={{
             height: 'calc(100vh - 70px)',
           }}
         >
-          <TextSidebar />
+          <SidebarList />
         </Box>
-        <Canvas />
+        <div className="flex w-full justify-center">
+          <Canvas />
+        </div>
         <div className="relative">
           <div className="fixed right-0 h-10 w-20 cursor-pointer text-xs">rightsidebar</div>
         </div>

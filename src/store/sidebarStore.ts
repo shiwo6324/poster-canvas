@@ -1,6 +1,7 @@
+import { EMPTY_TYPE, GRAPHIC_TYPE, IMAGE_TYPE, TEXT_TYPE } from 'src/types/const'
 import { create } from 'zustand'
 
-type SidebarType = 0 | 1 | 2 | 3
+type SidebarType = TEXT_TYPE | GRAPHIC_TYPE | IMAGE_TYPE | EMPTY_TYPE
 
 interface sidebarTypeState {
   type: SidebarType
@@ -9,5 +10,5 @@ interface sidebarTypeState {
 
 export const useSidebarTypeStore = create<sidebarTypeState>()((set) => ({
   type: 0,
-  setType: (type) => set((state) => ({ type })),
+  setType: (type) => set(() => ({ type })),
 }))

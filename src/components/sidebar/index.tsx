@@ -1,11 +1,8 @@
-import { AppShell, Box, Button, Stack } from '@mantine/core'
+import { AppShell, Button, Stack } from '@mantine/core'
+
 import classNames from 'classnames'
 
 import { useSidebarTypeStore } from 'src/store/sidebarStore'
-
-export const isTextComponent = 1
-export const isImgComponent = 2
-export const isGraphComponent = 3
 
 const Sidebar = () => {
   const { setType, type } = useSidebarTypeStore()
