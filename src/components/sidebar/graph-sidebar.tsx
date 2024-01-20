@@ -3,6 +3,7 @@ import { defaultComponentStyle } from 'src/utils/const'
 import { useSidebarTypeStore } from 'src/store/sidebarStore'
 import { addComponent } from 'src/store/editStore'
 import React from 'react'
+import { CompType } from 'src/types/const'
 
 const defaultStyle: React.CSSProperties = {
   ...defaultComponentStyle,
@@ -27,7 +28,7 @@ const settings = [
 const GraphSidebar = () => {
   const { type } = useSidebarTypeStore((state) => state)
 
-  if (type !== 3) return null
+  if (type !== CompType.GRAPH) return null
   return (
     <Grid columns={8} p={10} className="relative z-50 h-full shadow-xl">
       {settings.map((item) => (

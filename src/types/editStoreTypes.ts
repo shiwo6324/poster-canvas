@@ -1,4 +1,5 @@
 import React from 'react'
+import { CompType } from './const'
 
 export type Style = React.CSSProperties
 
@@ -9,7 +10,7 @@ export interface ICanvas {
 }
 
 export interface IComponent {
-  type: number
+  type: CompType
   style: Style
   value: string //
   onClick?: string

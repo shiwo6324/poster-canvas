@@ -1,12 +1,35 @@
 import React from 'react'
 import { addComponent, useEditStore } from 'src/store/editStore'
-import { IComponentWithKey } from 'src/types/editStoreTypes'
 import CanvasItem from './components/canvas-item'
+import { toast } from 'sonner'
+import { getCanvas } from 'src/request/canvas'
+import { useCanvasId } from 'src/hooks/useCanvasIdAndType'
 
 const Canvas = () => {
-  const { canvas } = useEditStore()
-  const { style } = canvas
+  const { canvas, setCanvas, clearCanvas } = useEditStore()
+  const id = useCanvasId()
   const divRef = React.useRef<HTMLDivElement>(null)
+  const fetchCanvas = async () => {
+    if (id) {
+      await getCanvas(
+        id,
+        (res: any) => {
+          setCanvas({
+            ...JSON.parse(res.content),
+            title: res.title,
+          })
+        },
+        () => {
+          toast.error('获取数据失败')
+        },
+      )
+    }
+    // clearCanvas()
+  }
+
+  React.useEffect(() => {
+    fetchCanvas()
+  }, [])
 
   const onDrop = (e: any) => {
     // 1. 读取被拖拽组件的信息
@@ -50,8 +73,8 @@ const Canvas = () => {
       className="relative   self-start    shadow-xl "
       style={canvas.style}
     >
-      {canvas.components.map((component) => (
-        <CanvasItem key={component.key} component={component} index={2} />
+      {canvas.components.map((component, index) => (
+        <CanvasItem key={component.key} component={component} index={index} />
       ))}
     </div>
   )

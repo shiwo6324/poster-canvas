@@ -4,22 +4,25 @@ import { common, end, myAxios } from './index'
 // 查询, 没有设置登录权限
 export function getCanvas(
   values: number, //id
-  successCallback: () => void,
+  successCallback?: (res: any) => void,
   failedCallback?: () => void,
 ) {
-  axios.get(end + '/api/web/content/get?id=' + values).then((res) => {
-    common(res, successCallback)
+  axios.get('/api/web/content/get?id=' + values).then((res) => {
+    common(res, successCallback, failedCallback)
   })
 }
 
 // 保存
 export function saveCanvas(
   values: { id?: number | null; content: string; type?: string; title?: string },
-  successCallback: () => void,
+  successCallback: (id: number) => void,
   failedCallback?: () => void,
 ) {
-  myAxios.post(end + '/api/web/content/save', values).then((res) => {
-    common(res, successCallback)
+  myAxios.post('/api/web/content/save', values).then((res: any) => {
+    const id = res.data.result.id
+    common(res, () => successCallback(id))
+
+    // successCallback(id)
   })
 }
 

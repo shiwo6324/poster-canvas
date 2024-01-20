@@ -3,6 +3,7 @@ import { AppShell, Button, Stack } from '@mantine/core'
 import classNames from 'classnames'
 
 import { useSidebarTypeStore } from 'src/store/sidebarStore'
+import { CompType } from 'src/types/const'
 
 const Sidebar = () => {
   const { setType, type } = useSidebarTypeStore()
@@ -10,22 +11,22 @@ const Sidebar = () => {
     <AppShell.Navbar p="md" w={'auto'} pos={'fixed'}>
       <Stack bg="var(--mantine-color-body)" align="center" gap="xs">
         <Button
-          className={classNames(type === 1 ? '' : 'text-slate-500')}
-          onClick={() => setType(1)}
+          className={classNames(type === CompType.TEXT ? '' : 'text-slate-500')}
+          onClick={() => setType(CompType.TEXT)}
           variant="transparent"
         >
           文本
         </Button>
         <Button
-          className={classNames(type === 2 ? '' : 'text-slate-500')}
-          onClick={() => setType(2)}
+          className={classNames(type === CompType.IMAGE ? '' : 'text-slate-500')}
+          onClick={() => setType(CompType.IMAGE)}
           variant="transparent"
         >
           图片
         </Button>
         <Button
-          className={classNames(type === 3 ? '' : 'text-slate-500')}
-          onClick={() => setType(3)}
+          className={classNames(type === CompType.GRAPH ? '' : 'text-slate-500')}
+          onClick={() => setType(CompType.GRAPH)}
           variant="transparent"
         >
           图形

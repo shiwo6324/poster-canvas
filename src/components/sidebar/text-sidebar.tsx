@@ -3,10 +3,11 @@ import { defaultComponentStyle } from 'src/utils/const'
 import { useSidebarTypeStore } from 'src/store/sidebarStore'
 import { addComponent } from 'src/store/editStore'
 import React from 'react'
+import { CompType } from 'src/types/const'
 
 const defaultStyle: React.CSSProperties = {
   ...defaultComponentStyle,
-  width: 170,
+  width: 180,
   height: 30,
   lineHeight: '30px',
   fontSize: 12,
@@ -37,7 +38,7 @@ const settings = [
 const TextSidebar = () => {
   const { type } = useSidebarTypeStore((state) => state)
 
-  if (type !== 1) return null
+  if (type !== CompType.TEXT) return null
   return (
     <Grid columns={8} p={10} className="z-50 h-full shadow-xl">
       {settings.map((item) => (

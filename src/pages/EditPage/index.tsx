@@ -1,12 +1,14 @@
-import React from 'react'
 import { Box, Flex } from '@mantine/core'
 import Canvas from 'src/components/canvas'
 import Sidebar from 'src/components/sidebar'
 import SidebarList from 'src/components/sidebar-list'
 
+import CanvasHeader from 'src/components/canvas-header'
+
 const EditPage = () => {
   return (
     <div>
+      <CanvasHeader />
       <Sidebar />
       <Flex>
         <Box
