@@ -1,33 +1,41 @@
-import { Box, Image } from '@mantine/core'
+import { Image } from '@mantine/core'
 import { IComponentWithKey } from 'src/types/editStoreTypes'
 import { omit, pick } from 'lodash'
 import classNames from 'classnames'
 import { CompType } from 'src/types/const'
 import { useEditStore } from 'src/store/editStore'
+import React from 'react'
 
 interface CanvasComponentProps {
   component: IComponentWithKey
   index: number
+  isSelected: boolean
 }
 
-const CanvasItem = ({ component, index }: CanvasComponentProps) => {
-  const { selectedComponents, setSelectedComponent } = useEditStore()
-  const isSelected = selectedComponents.has(index)
+const CanvasItem = React.memo(({ component, isSelected, index }: CanvasComponentProps) => {
+  const { setSelectedComponent, setSelectedComponents } = useEditStore()
   const { style } = component
   const outerStyle = pick(style, ['position', 'top', 'left', 'width', 'height'])
   const innerStyle = omit(style, ['position', 'top', 'left'])
 
-  const handleSelectComponent = () => {
-    setSelectedComponent(index)
+  // TODO: 优化重新渲染
+  const handleSelectComponent = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.ctrlKey) {
+      setSelectedComponents([index])
+    } else {
+      setSelectedComponent(index)
+    }
   }
+  console.log('render')
+
   return (
     <div
-      className={classNames(isSelected && 'ring ring-offset-2')}
+      className={classNames('transition-all', isSelected && 'ring ring-offset-2 ')}
       style={outerStyle}
-      onClick={handleSelectComponent}
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectComponent(e)}
     >
       <div className="!border-4 !border-solid !border-black  " style={innerStyle}>
-        {component.type === CompType.TEXT && <div>{component.value}</div>}
+        {component.type === CompType.TEXT && <div className="h-full w-full">{component.value}</div>}
 
         {component.type === CompType.IMAGE && (
           <Image src={component.value} className="h-full w-full" fit="fill" />
@@ -35,6 +43,6 @@ const CanvasItem = ({ component, index }: CanvasComponentProps) => {
       </div>
     </div>
   )
-}
+})
 
 export default CanvasItem

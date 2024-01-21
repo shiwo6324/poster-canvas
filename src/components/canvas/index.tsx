@@ -4,11 +4,15 @@ import CanvasItem from './components/canvas-item'
 import { toast } from 'sonner'
 import { getCanvas } from 'src/request/canvas'
 import { useCanvasId } from 'src/hooks/useCanvasIdAndType'
+import { useClickOutside, useHotkeys } from '@mantine/hooks'
+import EditArea from './components/edit-area'
 
 const Canvas = () => {
-  const { canvas, setCanvas, clearCanvas } = useEditStore()
+  const { canvas, setCanvas, setSelectedComponent, selectAllComponents, selectedComponents } =
+    useEditStore()
   const id = useCanvasId()
-  const divRef = React.useRef<HTMLDivElement>(null)
+  const divRef = useClickOutside(() => setSelectedComponent(-1))
+  useHotkeys([['ctrl+a', selectAllComponents]])
   const fetchCanvas = async () => {
     if (id) {
       await getCanvas(
@@ -73,8 +77,14 @@ const Canvas = () => {
       className="relative   self-start    shadow-xl "
       style={canvas.style}
     >
+      <EditArea />
       {canvas.components.map((component, index) => (
-        <CanvasItem key={component.key} component={component} index={index} />
+        <CanvasItem
+          isSelected={selectedComponents.has(index)}
+          key={component.key}
+          component={component}
+          index={index}
+        />
       ))}
     </div>
   )

@@ -2,6 +2,9 @@ import { ICanvas, IComponent } from 'src/types/editStoreTypes'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { devtools } from 'zustand/middleware'
+import { enableMapSet } from 'immer'
+
+enableMapSet()
 
 interface EditStoreState {
   canvas: ICanvas
@@ -27,6 +30,7 @@ export const useEditStore = create<EditStoreState>()(
         set((state) => {
           state.canvas = canvas
         }),
+      // 清空画布
       clearCanvas: () =>
         set((state) => {
           state.canvas = getDefaultCanvas()
@@ -36,8 +40,6 @@ export const useEditStore = create<EditStoreState>()(
       setSelectedComponent: (index) =>
         set((state) => {
           if (index > -1) {
-            console.log('窜下')
-
             state.selectedComponents = new Set([index])
           }
           if (index === -1) {
@@ -49,14 +51,15 @@ export const useEditStore = create<EditStoreState>()(
       // 选中多个，如果再次点击已经选中的组件，则取消选中
       setSelectedComponents: (indexes) =>
         set((state) => {
-          if (indexes.length > 0) {
+          if (indexes) {
             indexes.forEach((index) => {
               if (state.selectedComponents.has(index)) {
                 // 取消选中
                 state.selectedComponents.delete(index)
+              } else {
+                // 选中
+                state.selectedComponents.add(index)
               }
-              // 选中
-              state.selectedComponents.add(index)
             })
           }
         }),
