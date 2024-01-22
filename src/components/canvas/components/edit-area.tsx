@@ -1,8 +1,10 @@
+import { useEventListener } from '@mantine/hooks'
+import { throttle } from 'lodash'
 import React from 'react'
 import { useEditStore } from 'src/store/editStore'
 
 const EditArea = () => {
-  const { canvas, selectedComponents } = useEditStore()
+  const { canvas, selectedComponents, updateSelectedComponentsPosition } = useEditStore()
 
   const size = selectedComponents.size
   if (size === 0) return
@@ -29,10 +31,43 @@ const EditArea = () => {
   // 减去蓝框和红框
   top -= 4
   left -= 4
+
+  const handleMoveSelectedComponents = (e: React.MouseEvent<HTMLDivElement>) => {
+    // 获取鼠标按下时的水平位置
+    let startX = e.pageX
+    let startY = e.pageY
+
+    const move = throttle((e: any) => {
+      // 计算鼠标移动的距离
+      const x = e.pageX
+      const y = e.pageY
+
+      // 鼠标相对于初始位置向右（或向下）移动了多远，所以需要用当前位置减去初始位置
+      const disX = x - startX // 计算水平方向的位移
+      const disY = y - startY // 计算垂直方向的位移
+
+      // 更新选定组件的位置
+      updateSelectedComponentsPosition({
+        left: disX,
+        top: disY,
+      })
+
+      // 更新鼠标 水平/垂直 位置，为下一次移动做准备
+      startX = x
+      startY = y
+    }, 20)
+    const up = () => {
+      document.removeEventListener('mousemove', move)
+      document.removeEventListener('mouseup', up)
+    }
+    document.addEventListener('mousemove', move)
+    document.addEventListener('mouseup', up)
+  }
   return (
     <div
-      style={{ top, left, width, height }}
-      className="pointer-events-none absolute border-4 border-solid border-rose-500"
+      style={{ top, left, width, height, zIndex: 9999 }}
+      className="absolute cursor-move border-4 border-solid border-rose-500"
+      onMouseDown={handleMoveSelectedComponents}
     ></div>
   )
 }

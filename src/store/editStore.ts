@@ -15,6 +15,7 @@ interface EditStoreState {
   setSelectedComponents: (indexes: number[]) => void
   setSelectedComponent: (index: number) => void
   selectAllComponents: () => void
+  updateSelectedComponentsPosition: (position: { top: number; left: number }) => void
 }
 
 export const useEditStore = create<EditStoreState>()(
@@ -69,6 +70,15 @@ export const useEditStore = create<EditStoreState>()(
         set((state) => {
           const length = state.canvas.components.length
           state.selectedComponents = new Set(Array.from({ length }, (_, index) => index))
+        }),
+      updateSelectedComponentsPosition: (position) =>
+        set((state) => {
+          state.selectedComponents.forEach((index) => {
+            const component = state.canvas.components[index]
+            for (const i in position) {
+              component.style[i] += position[i]
+            }
+          })
         }),
     })),
   ),

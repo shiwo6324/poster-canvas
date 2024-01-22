@@ -26,11 +26,10 @@ const CanvasItem = React.memo(({ component, isSelected, index }: CanvasComponent
       setSelectedComponent(index)
     }
   }
-  console.log('render')
 
   return (
     <div
-      className={classNames('transition-all', isSelected && 'ring ring-offset-2 ')}
+      className={classNames('', isSelected && 'ring ring-offset-2 ')}
       style={outerStyle}
       onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectComponent(e)}
     >
