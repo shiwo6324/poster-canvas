@@ -46,7 +46,7 @@ const EditArea = () => {
       const disX = x - startX // 计算水平方向的位移
       const disY = y - startY // 计算垂直方向的位移
 
-      // 更新选定组件的位置
+      // 更新选定组件的位置, 不能直接赋值 disX/y,因为组件的位置是相对于 canvas 的
       updateSelectedComponentsPosition({
         left: disX,
         top: disY,
