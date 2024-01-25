@@ -73,10 +73,33 @@ export const useEditStore = create<EditStoreState>()(
         }),
       updateSelectedComponentsPosition: (position) =>
         set((state) => {
+          // 遍历编辑区域中的组件
           state.selectedComponents.forEach((index) => {
-            const component = state.canvas.components[index]
-            for (const i in position) {
-              component.style[i] += position[i]
+            // 制作组件的副本
+            const component = { ...state.canvas.components[index] }
+
+            // 用于标记是否存在无效的更新
+            let invalid = false
+
+            // 遍历传入的位置对象
+            for (const key in position) {
+              // 检查是否更新宽度或高度，并且更新后的值小于 2
+              if (
+                (key === 'width' || key === 'height') &&
+                component.style[key] + position[key] < 2
+              ) {
+                // 存在无效的更新
+                invalid = true
+                break
+              }
+
+              // 更新组件的样式属性
+              component.style[key] += position[key]
+            }
+
+            // 如果没有无效更新，则将更新后的组件替换回原来的位置
+            if (!invalid) {
+              state.canvas.components[index] = component
             }
           })
         }),

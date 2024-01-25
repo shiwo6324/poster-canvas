@@ -8,9 +8,11 @@ import { useCanvasId, useCanvasType } from 'src/hooks/useCanvasIdAndType'
 import { saveCanvas } from 'src/request/canvas'
 import { useEditStore } from 'src/store/editStore'
 import { toast } from 'sonner'
+import { useZoomStore } from 'src/store/zoom-store'
 
 const CanvasHeader = () => {
   const { canvas, clearCanvas } = useEditStore()
+  const { resetZoom } = useZoomStore()
   const navigate = useNavigate()
   const id = useCanvasId()
   const type = useCanvasType()
@@ -49,6 +51,10 @@ const CanvasHeader = () => {
     )
   }
 
+  const handleClearCanvas = () => {
+    clearCanvas()
+    resetZoom()
+  }
   return (
     <AppShell.Header px={20}>
       <ul className="flex h-full items-center justify-between gap-3">
@@ -75,7 +81,7 @@ const CanvasHeader = () => {
         </li>
         <li className="group flex cursor-pointer items-center gap-1">
           <GiBroom size={20} className="group-hover:text-red-500" />
-          <p className="group-hover:text-red-500" onClick={clearCanvas}>
+          <p className="group-hover:text-red-500" onClick={handleClearCanvas}>
             清空
           </p>
         </li>

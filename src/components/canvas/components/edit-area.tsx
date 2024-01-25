@@ -2,10 +2,12 @@ import { useEventListener } from '@mantine/hooks'
 import { throttle } from 'lodash'
 import React from 'react'
 import { useEditStore } from 'src/store/editStore'
+import { useZoomStore } from 'src/store/zoom-store'
+import FlexDots from './flex-dots'
 
 const EditArea = () => {
   const { canvas, selectedComponents, updateSelectedComponentsPosition } = useEditStore()
-
+  const { zoom } = useZoomStore()
   const size = selectedComponents.size
   if (size === 0) return
 
@@ -43,10 +45,12 @@ const EditArea = () => {
       const y = e.pageY
 
       // 鼠标相对于初始位置向右（或向下）移动了多远，所以需要用当前位置减去初始位置
-      const disX = x - startX // 计算水平方向的位移
-      const disY = y - startY // 计算垂直方向的位移
+      let disX = x - startX // 计算水平方向的位移
+      let disY = y - startY // 计算垂直方向的位移
 
-      // 更新选定组件的位置, 不能直接赋值 disX/y,因为组件的位置是相对于 canvas 的
+      disX = disX * (100 / zoom)
+      disY = disY * (100 / zoom)
+      // 更新选定组件的位置, 不能直接赋值 disX/Y，因为组件的位置是相对于 canvas 的
       updateSelectedComponentsPosition({
         left: disX,
         top: disY,
@@ -68,7 +72,9 @@ const EditArea = () => {
       style={{ top, left, width, height, zIndex: 9999 }}
       className="absolute cursor-move border-4 border-solid border-rose-500"
       onMouseDown={handleMoveSelectedComponents}
-    ></div>
+    >
+      <FlexDots zoom={zoom} style={{ width, height }} />
+    </div>
   )
 }
 

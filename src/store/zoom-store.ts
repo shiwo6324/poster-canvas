@@ -12,10 +12,10 @@ type Actions = {
   setZoom: (zoom: number) => void
 }
 
-export const useCountStore = create<State & Actions>()(
+export const useZoomStore = create<State & Actions>()(
   immer((set) => ({
     zoom: 100,
-    zoomIn: () =>
+    zoomOut: () =>
       set((state) => {
         if (state.zoom - 25 < 1) {
           state.zoom -= 1
@@ -23,7 +23,7 @@ export const useCountStore = create<State & Actions>()(
           state.zoom -= 25
         }
       }),
-    zoomOut: () =>
+    zoomIn: () =>
       set((state) => {
         state.zoom += 25
       }),
