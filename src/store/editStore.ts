@@ -3,6 +3,7 @@ import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { devtools } from 'zustand/middleware'
 import { enableMapSet } from 'immer'
+import { CSSProperties } from 'react'
 
 enableMapSet()
 
@@ -16,6 +17,12 @@ interface EditStoreState {
   setSelectedComponent: (index: number) => void
   selectAllComponents: () => void
   updateSelectedComponentsPosition: (position: { top: number; left: number }) => void
+  updateCanvasStyle: (style: CSSProperties) => void
+  updateCanvasTitle: (title: string) => void
+  updateSelectedComponentValue: (value: string) => void
+  updateSelectedComponentStyle: (style: CSSProperties) => void
+  updateSelectedComponentAttr: (name: string, value: string) => void
+  editSelectedComponentsStyle: (style: CSSProperties) => void
 }
 
 export const useEditStore = create<EditStoreState>()(
@@ -71,6 +78,8 @@ export const useEditStore = create<EditStoreState>()(
           const length = state.canvas.components.length
           state.selectedComponents = new Set(Array.from({ length }, (_, index) => index))
         }),
+
+      // 根据改变的量来修改
       updateSelectedComponentsPosition: (position) =>
         set((state) => {
           // 遍历编辑区域中的组件
@@ -101,6 +110,54 @@ export const useEditStore = create<EditStoreState>()(
             if (!invalid) {
               state.canvas.components[index] = component
             }
+          })
+        }),
+      updateCanvasStyle: (style) =>
+        set((state) => {
+          Object.assign(state.canvas.style, style)
+        }),
+      updateCanvasTitle: (title) =>
+        set((state) => {
+          state.canvas.title = title
+        }),
+      updateSelectedComponentValue: (value) =>
+        set((state) => {
+          state.canvas.components[0].value = value
+        }),
+      updateSelectedComponentStyle: (style) =>
+        set((state) => {
+          const componentIndex = [...state.selectedComponents][0]
+          Object.assign(state.canvas.components[componentIndex].style, style)
+        }),
+      updateSelectedComponentAttr: (name, value) =>
+        set((state) => {
+          const componentIndex = [...state.selectedComponents][0]
+
+          state.canvas.components[componentIndex][name] = value
+        }),
+      editSelectedComponentsStyle: (style) =>
+        set((state) => {
+          console.log(style)
+          let prevComponentStyle = null
+          state.selectedComponents.forEach((index) => {
+            const componentStyle = { ...state.canvas.components[index].style }
+            const canvasStyle = state.canvas.style
+
+            if (style.right === 0) {
+              // 计算 left
+              componentStyle.left = canvasStyle.width - componentStyle.width
+            } else if (style.bottom === 0) {
+              componentStyle.top =
+                canvasStyle.height - componentStyle.height - (prevComponentStyle?.height ?? 0)
+            } else if (style.left === 'center') {
+              componentStyle.left = (canvasStyle.width - componentStyle.width) / 2
+            } else if (style.top === 'center') {
+              componentStyle.top = (canvasStyle.height - componentStyle.height) / 2
+            } else {
+              Object.assign(componentStyle, style)
+            }
+            state.canvas.components[index].style = componentStyle
+            prevComponentStyle = componentStyle
           })
         }),
     })),

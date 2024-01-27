@@ -20,7 +20,9 @@ const Canvas = () => {
   } = useEditStore()
   const { zoom, zoomOut, zoomIn, resetZoom } = useZoomStore()
   const id = useCanvasId()
-  const divRef = useClickOutside(() => setSelectedComponent(-1))
+  const divRef = useClickOutside(() => {
+    // setSelectedComponent(-1)
+  })
   useHotkeys([
     ['ctrl+a', selectAllComponents],
     [

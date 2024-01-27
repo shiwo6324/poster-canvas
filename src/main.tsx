@@ -11,7 +11,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <MantineProvider>
       <Toaster />
-
       <App />
     </MantineProvider>
   </React.StrictMode>,

@@ -29,16 +29,18 @@ const CanvasItem = React.memo(({ component, isSelected, index }: CanvasComponent
 
   return (
     <div
-      className={classNames('', isSelected && 'ring ring-offset-2 ')}
+      className={classNames('overflow-hidden', isSelected && 'ring ring-offset-2 ')}
       style={outerStyle}
       onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectComponent(e)}
     >
-      <div className="!border-4 !border-solid !border-black  " style={innerStyle}>
+      {/* <div className="!border-4 !border-solid !border-black  " style={innerStyle}> */}
+      <div className="  " style={innerStyle}>
         {component.type === CompType.TEXT && <div className="h-full w-full">{component.value}</div>}
 
         {component.type === CompType.IMAGE && (
           <Image src={component.value} className="h-full w-full" fit="fill" />
         )}
+        {/* {component.type === CompType.GRAPH && <div className="h-full w-full"></div>} */}
       </div>
     </div>
   )

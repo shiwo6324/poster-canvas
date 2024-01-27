@@ -21,6 +21,7 @@ const settings = [
       ...defaultStyle,
       borderWidth: 1,
       borderStyle: 'solid',
+      backgroundColor: 'transparent',
     },
   },
 ]

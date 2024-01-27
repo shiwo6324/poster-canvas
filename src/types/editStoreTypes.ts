@@ -12,7 +12,7 @@ export interface ICanvas {
 export interface IComponent {
   type: CompType
   style: Style
-  value: string //
+  value: string
   onClick?: string
 }
 

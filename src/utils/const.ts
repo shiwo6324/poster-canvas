@@ -8,5 +8,5 @@ export const defaultComponentStyle: React.CSSProperties = {
   borderStyle: 'none',
   borderWidth: '0',
   borderColor: '#ffffff00',
-  // transform: 'rotate(0deg)',
+  transform: 0,
 }

@@ -8,8 +8,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<RequiredAuth />}>
-          <Route index element={<EditPage />} />
-          <Route path="list" element={<ListPage />} />
+          <Route path="edit" element={<EditPage />} />
+          <Route index path="list" element={<ListPage />} />
         </Route>
       </Routes>
     </Router>

@@ -4,7 +4,7 @@ import GraphSidebar from './sidebar/graph-sidebar'
 
 const SidebarList = () => {
   return (
-    <div className="h-full">
+    <div className="h-full ">
       <TextSidebar />
       <ImageSidebar />
       <GraphSidebar />

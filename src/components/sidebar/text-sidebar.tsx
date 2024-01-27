@@ -40,7 +40,7 @@ const TextSidebar = () => {
 
   if (type !== CompType.TEXT) return null
   return (
-    <Grid columns={8} p={10} className="z-50 h-full shadow-xl">
+    <Grid columns={8} p={10} className="z-50 h-full w-full shadow-xl  ">
       {settings.map((item) => (
         <Grid.Col
           span={4}
