@@ -131,33 +131,34 @@ export const useEditStore = create<EditStoreState>()(
         }),
       updateSelectedComponentAttr: (name, value) =>
         set((state) => {
+          // 获取已选择组件的index
           const componentIndex = [...state.selectedComponents][0]
 
           state.canvas.components[componentIndex][name] = value
         }),
       editSelectedComponentsStyle: (style) =>
         set((state) => {
-          console.log(style)
-          let prevComponentStyle = null
           state.selectedComponents.forEach((index) => {
             const componentStyle = { ...state.canvas.components[index].style }
             const canvasStyle = state.canvas.style
 
             if (style.right === 0) {
-              // 计算 left
+              // 如果选择右对齐，计算 left
               componentStyle.left = canvasStyle.width - componentStyle.width
             } else if (style.bottom === 0) {
-              componentStyle.top =
-                canvasStyle.height - componentStyle.height - (prevComponentStyle?.height ?? 0)
+              // 如果选择下对齐，计算 top
+              componentStyle.top = canvasStyle.height - componentStyle.height
             } else if (style.left === 'center') {
+              // 如果选择水平对齐，计算 left
               componentStyle.left = (canvasStyle.width - componentStyle.width) / 2
             } else if (style.top === 'center') {
+              // 如果选择垂直居中，计算 top
               componentStyle.top = (canvasStyle.height - componentStyle.height) / 2
             } else {
+              // 其他情况，直接应用选择的样式
               Object.assign(componentStyle, style)
             }
             state.canvas.components[index].style = componentStyle
-            prevComponentStyle = componentStyle
           })
         }),
     })),

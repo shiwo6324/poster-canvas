@@ -14,9 +14,9 @@ const Canvas = () => {
     canvas,
     setCanvas,
     clearCanvas,
-    setSelectedComponent,
     selectAllComponents,
     selectedComponents,
+    setSelectedComponent,
   } = useEditStore()
   const { zoom, zoomOut, zoomIn, resetZoom } = useZoomStore()
   const id = useCanvasId()
@@ -103,6 +103,12 @@ const Canvas = () => {
   return (
     <>
       <div
+        onClick={(e) => {
+          if (e.target.id === 'canvas') {
+            setSelectedComponent(-1)
+          }
+        }}
+        id="canvas"
         ref={divRef}
         onDrop={onDrop}
         onDragOver={(e) => e.preventDefault()}

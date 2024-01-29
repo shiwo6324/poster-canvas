@@ -1,16 +1,27 @@
-import { useEventListener } from '@mantine/hooks'
+import TextareaAutosize from 'react-textarea-autosize'
 import { throttle } from 'lodash'
 import React from 'react'
 import { useEditStore } from 'src/store/editStore'
 import { useZoomStore } from 'src/store/zoom-store'
 import FlexDots from './flex-dots'
+import { CompType } from '@/src/types/const'
+import { Textarea } from '@mantine/core'
 
 const EditArea = () => {
-  const { canvas, selectedComponents, updateSelectedComponentsPosition } = useEditStore()
+  const [textAreaFocused, setTextAreaFocused] = React.useState(false)
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
+
+  const {
+    canvas,
+    selectedComponents,
+    updateSelectedComponentsPosition,
+    updateSelectedComponentAttr,
+    updateSelectedComponentStyle,
+  } = useEditStore()
   const { zoom } = useZoomStore()
   const size = selectedComponents.size
   if (size === 0) return
-
+  const textComponent = canvas.components[[...selectedComponents][0]]
   // 初始化边界值
   let top = 9999
   let left = 9999
@@ -34,7 +45,13 @@ const EditArea = () => {
   top -= 4
   left -= 4
 
+  // 在画布上移动组件位置
   const handleMoveSelectedComponents = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (textAreaFocused) {
+      return
+    }
+    // 在画布上移动组件位置
+    e.preventDefault()
     // 获取鼠标按下时的水平位置
     let startX = e.pageX
     let startY = e.pageY
@@ -70,9 +87,52 @@ const EditArea = () => {
   return (
     <div
       style={{ top, left, width, height, zIndex: 9999 }}
-      className="absolute cursor-move border-4 border-solid border-rose-500"
+      className="absolute cursor-move border-4 border-solid border-sky-500"
       onMouseDown={handleMoveSelectedComponents}
+      onDoubleClick={() => setTextAreaFocused(true)}
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+      }}
     >
+      {size === 1 && textComponent.type === CompType.TEXT && textAreaFocused && (
+        <textarea
+          ref={textareaRef}
+          defaultValue={textComponent.value}
+          onChange={(e) => {
+            const newValue = e.target.value
+            // 如果改变文本高度，则调整组件框高度
+            const textHeight = textareaRef?.current?.scrollHeight
+            updateSelectedComponentAttr('value', newValue)
+            updateSelectedComponentStyle({ height: textHeight })
+          }}
+          onBlur={() => {
+            // const newValue = e.target.value
+            setTextAreaFocused(false)
+            // updateSelectedComponentAttr('value', newValue)
+          }}
+          style={{
+            ...textComponent.style,
+            width: width - 8,
+            // height,
+            top: 0,
+            left: 0,
+          }}
+        />
+
+        // <TextareaAutosize
+        //   value={textComponent.value}
+        //   style={{ ...textComponent.style, top: 1, left: 0.2 }}
+        //   onChange={(e) => {
+        //     updateSelectedComponentAttr('value', e.target.value)
+        //   }}
+        //   onHeightChange={(height) => {
+        //     updateSelectedComponentStyle({
+        //       height,
+        //     })
+        //   }}
+        // />
+      )}
       <FlexDots zoom={zoom} style={{ width, height }} />
     </div>
   )

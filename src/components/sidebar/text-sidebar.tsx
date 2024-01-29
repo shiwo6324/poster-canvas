@@ -7,7 +7,7 @@ import { CompType } from 'src/types/const'
 
 const defaultStyle: React.CSSProperties = {
   ...defaultComponentStyle,
-  width: 180,
+  width: 170,
   height: 30,
   lineHeight: '30px',
   fontSize: 12,

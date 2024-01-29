@@ -12,7 +12,7 @@ import { CompType } from '@/src/types/const'
 import EditSidebar from '@/src/components/edit-sidebar'
 
 const EditPage = () => {
-  const { canvas } = useEditStore()
+  const { canvas, setSelectedComponent } = useEditStore()
   const { zoom } = useZoomStore()
   const { setType } = useSidebarTypeStore()
 
@@ -31,6 +31,7 @@ const EditPage = () => {
           <SidebarList />
         </Box>
         <div
+          id="container"
           className="flex w-full justify-center py-9 "
           style={{
             // 将 canvas 容器的高度乘以 canvas 的缩放比例， +100 的目的是底部留空间
@@ -38,6 +39,9 @@ const EditPage = () => {
           }}
           onClick={(e: any) => {
             setType(CompType.EMPTY)
+            if (e.target.id === 'container') {
+              setSelectedComponent(-1)
+            }
           }}
         >
           <Canvas />
@@ -45,16 +49,6 @@ const EditPage = () => {
         <AppShell.Aside>
           <EditSidebar />
         </AppShell.Aside>
-
-        {/* <Box
-          style={{
-            height: 'calc(100vh - 70px)',
-          }}
-        >
-          <EditSidebar />
-        </Box> */}
-        {/* <EditSidebar /> */}
-        {/* <div className=" h-10 w-96 cursor-pointer bg-red-300 text-xs">rightsidebar</div> */}
       </Flex>
     </div>
   )

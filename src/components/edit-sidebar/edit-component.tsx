@@ -1,9 +1,19 @@
 import { useEditStore } from '@/src/store/editStore'
 import { CompType } from '@/src/types/const'
 import { IComponent } from '@/src/types/editStoreTypes'
-import { ColorInput, DEFAULT_THEME, NativeSelect, NumberInput, TextInput } from '@mantine/core'
+import {
+  ColorInput,
+  DEFAULT_THEME,
+  NativeSelect,
+  NumberInput,
+  TextInput,
+  Textarea,
+} from '@mantine/core'
+import React from 'react'
 
 const EditComponent = ({ component }: { component: IComponent }) => {
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
+
   const { style, onClick = '' } = component
   const {
     updateSelectedComponentValue,
@@ -38,6 +48,19 @@ const EditComponent = ({ component }: { component: IComponent }) => {
   }
   return (
     <div className="flex   h-[calc(100vh-100px)] flex-col gap-3 overflow-scroll px-3 py-3">
+      {/* {component.type === CompType.TEXT && (
+        <Textarea
+          ref={textareaRef}
+          label="内容"
+          description=" "
+          defaultValue={component.value}
+          onBlur={(e) => {
+            updateSelectedComponentAttr('value', e.target.value)
+            const textHeight = textareaRef?.current?.scrollHeight
+            updateSelectedComponentStyle({ height: textHeight })
+          }}
+        />
+      )} */}
       {component.type === CompType.IMAGE && (
         <TextInput
           label="描述"

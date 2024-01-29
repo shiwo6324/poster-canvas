@@ -5,3 +5,12 @@
 }
 @import '@mantine/core/styles.css';
 @import '@mantine/dates/styles.css';
+
+textarea {
+  outline: none;
+  resize: none;
+  font-family: unset;
+  scroll-behavior: unset;
+  overflow: hidden;
+  white-space: break-spaces;
+}
