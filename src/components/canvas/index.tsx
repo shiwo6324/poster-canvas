@@ -17,8 +17,11 @@ const Canvas = () => {
     selectAllComponents,
     selectedComponents,
     setSelectedComponent,
+    getNextCanvasHistory,
+    getPrevCanvasHistory,
   } = useEditStore()
   const { zoom, zoomOut, zoomIn, resetZoom } = useZoomStore()
+  const { resetCanvasChangeHistory } = useEditStore()
   const id = useCanvasId()
   const divRef = useClickOutside(() => {
     // setSelectedComponent(-1)
@@ -39,6 +42,8 @@ const Canvas = () => {
         zoomIn()
       },
     ],
+    ['ctrl+z', getPrevCanvasHistory],
+    ['ctrl+shift+x', getNextCanvasHistory],
   ])
   const fetchCanvas = async () => {
     if (id) {
@@ -49,6 +54,7 @@ const Canvas = () => {
             ...JSON.parse(res.content),
             title: res.title,
           })
+          resetCanvasChangeHistory()
         },
         () => {
           toast.error('获取数据失败')
@@ -103,6 +109,9 @@ const Canvas = () => {
   return (
     <>
       <div
+        onContextMenu={(e) => {
+          e.preventDefault()
+        }}
         onClick={(e) => {
           if (e.target.id === 'canvas') {
             setSelectedComponent(-1)

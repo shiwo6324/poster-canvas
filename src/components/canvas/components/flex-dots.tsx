@@ -9,7 +9,7 @@ interface FlexDotsProps {
 
 const FlexDots = ({ zoom, style }: FlexDotsProps) => {
   const { width, height, transform } = style
-  const { updateSelectedComponentsPosition } = useEditStore()
+  const { updateSelectedComponentsPosition, recordCanvasPostionHistory } = useEditStore()
 
   const onMouseDown = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -51,6 +51,7 @@ const FlexDots = ({ zoom, style }: FlexDotsProps) => {
     const up = () => {
       document.removeEventListener('mouseup', up)
       document.removeEventListener('mousemove', move)
+      recordCanvasPostionHistory()
     }
     document.addEventListener('mouseup', up)
     document.addEventListener('mousemove', move)

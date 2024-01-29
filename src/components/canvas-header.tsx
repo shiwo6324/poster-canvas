@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import { useZoomStore } from 'src/store/zoom-store'
 
 const CanvasHeader = () => {
-  const { canvas, clearCanvas } = useEditStore()
+  const { canvas, clearCanvas, getNextCanvasHistory, getPrevCanvasHistory } = useEditStore()
   const { resetZoom } = useZoomStore()
   const navigate = useNavigate()
   const id = useCanvasId()
@@ -71,11 +71,11 @@ const CanvasHeader = () => {
             保存并预览
           </p>
         </li>
-        <li className="group flex cursor-pointer items-center gap-1">
+        <li className="group flex cursor-pointer items-center gap-1" onClick={getPrevCanvasHistory}>
           <TbArrowBack size={20} className="group-hover:text-sky-500" />
           <p className="group-hover:text-sky-500">上一步</p>
         </li>
-        <li className="group flex cursor-pointer items-center gap-1">
+        <li className="group flex cursor-pointer items-center gap-1" onClick={getNextCanvasHistory}>
           <TbArrowForward size={20} className="group-hover:text-sky-500" />
           <p className="group-hover:text-sky-500">下一步</p>
         </li>
