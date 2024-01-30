@@ -205,10 +205,13 @@ export const useEditStore = create<EditStoreState>()(
         }),
 
       // 记录画布的操作历史
+      // 该函数中需要操作的 状态 是函数调用处的 状态(history)，而不是该函数中的 state
       recordCanvasHistory: (history) =>
-        set(() => {
+        set((state) => {
           // 在撤销回退过程中，此时历史下标为 currentIndex，如果此时用户又去修改画布或者组件属性,
           // 重新插入了新的历史进来，那么把 currentIndex 之后的记录全部删除，再把新的画布数据插入进来
+          // 历史记录：0 1 2 3 4 5 ，如果回退到下标 index 2，并且修改了该历史记录的内容，则从 2 开始删除后面的历史记录
+
           history.canvasChangeHistory = history.canvasChangeHistory.slice(
             0,
             history.canvasChangeHistoryIndex + 1,
@@ -218,6 +221,7 @@ export const useEditStore = create<EditStoreState>()(
             selectedComponents: history.selectedComponents,
           })
           history.canvasChangeHistoryIndex++
+          // 如果历史记录超过了最大允许数量，删除最旧的记录并相应调整下标
           if (history.canvasChangeHistory.length >= history.maxHistory) {
             history.canvasChangeHistory.shift()
             history.canvasChangeHistoryIndex--
@@ -227,36 +231,50 @@ export const useEditStore = create<EditStoreState>()(
       recordCanvasPostionHistory: () =>
         set((state) => {
           // 如果用户再拖拽或者拉伸过程中的位置状态和上一次历史记录的位置状态对比没有变化，则不记录
-          if (state.canvas === state.canvasChangeHistory[state.canvasChangeHistoryIndex].canvas)
+          if (state.canvas === state.canvasChangeHistory[state.canvasChangeHistoryIndex].canvas) {
             return
+          }
           state.recordCanvasHistory(state)
         }),
+      // 获取上一个画布历史记录
       getPrevCanvasHistory: () =>
         set((state) => {
+          // 计算新的历史记录索引
           let newIndex = state.canvasChangeHistoryIndex - 1
+
+          // 确保新索引不小于 0
           if (newIndex < 0) {
             newIndex = 0
           }
+          // 如果新索引与当前索引相同，则无需执行更改
           if (state.canvasChangeHistoryIndex === newIndex) {
             return
           }
+          // 获取新索引处的历史记录项
           const item = state.canvasChangeHistory[newIndex]
+          // 应用历史记录中的画布和选定组件到当前状态
           state.canvas = item.canvas
           state.selectedComponents = item.selectedComponents
+          // 更新当前历史记录索引为新索引
           state.canvasChangeHistoryIndex = newIndex
         }),
       getNextCanvasHistory: () =>
         set((state) => {
           let newIndex = state.canvasChangeHistoryIndex + 1
+          // 确保新索引不超过历史记录数组的最大索引
           if (newIndex >= state.canvasChangeHistory.length) {
             newIndex = state.canvasChangeHistory.length - 1
           }
+          // 如果新索引与当前索引相同，则无需执行更改
           if (state.canvasChangeHistoryIndex === newIndex) {
             return
           }
+          // 获取新索引处的历史记录项
           const item = state.canvasChangeHistory[newIndex]
+          // 应用历史记录中的画布和选定组件到当前状态
           state.canvas = item.canvas
           state.selectedComponents = item.selectedComponents
+          // 更新当前历史记录索引为新索引
           state.canvasChangeHistoryIndex = newIndex
         }),
     })),
@@ -270,8 +288,14 @@ export const addComponent = (component: IComponent) => {
     // 添加组件自动进入编辑状态
     state.selectedComponents = new Set([state.canvas.components.length - 1])
     state.recordCanvasHistory(state)
+    // state.canvasChangeHistory.push({
+    //   canvas: state.canvas,
+    //   selectedComponents: state.selectedComponents,
+    // })
+    // state.canvasChangeHistoryIndex++
   })
 }
+// 初始化画布
 function getDefaultCanvas(): ICanvas {
   return {
     title: '未命名',
