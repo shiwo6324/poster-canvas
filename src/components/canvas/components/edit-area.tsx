@@ -4,9 +4,11 @@ import { useEditStore } from 'src/store/editStore'
 import { useZoomStore } from 'src/store/zoom-store'
 import FlexDots from './flex-dots'
 import { CompType } from '@/src/types/const'
+import EditMenu from './edit-menu'
 
 const EditArea = () => {
   const [textAreaFocused, setTextAreaFocused] = React.useState(false)
+  const [showContextMenu, setShowContextMenu] = React.useState(false)
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
   const {
     canvas,
@@ -92,7 +94,10 @@ const EditArea = () => {
       onClick={(e) => {
         e.preventDefault()
         e.stopPropagation()
+        setShowContextMenu(false)
       }}
+      // onMouseLeave={() => setTextAreaFocused(false)}
+      onContextMenu={() => setShowContextMenu(true)}
     >
       {size === 1 && textComponent.type === CompType.TEXT && textAreaFocused && (
         <textarea
@@ -132,6 +137,7 @@ const EditArea = () => {
         //   }}
         // />
       )}
+      {showContextMenu && <EditMenu selectedComponentsSize={size} style={{}} />}
       <FlexDots zoom={zoom} style={{ width, height }} />
     </div>
   )

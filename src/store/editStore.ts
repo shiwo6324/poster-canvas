@@ -1,9 +1,10 @@
-import { ICanvas, IComponent } from 'src/types/editStoreTypes'
+import { ICanvas, IComponent, IComponentWithKey } from 'src/types/editStoreTypes'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { devtools } from 'zustand/middleware'
 import { enableMapSet } from 'immer'
 import { CSSProperties } from 'react'
+import { cloneDeep } from 'lodash'
 
 enableMapSet()
 
@@ -23,7 +24,7 @@ interface EditStoreState {
   updateSelectedComponentStyle: (style: CSSProperties) => void
   updateSelectedComponentAttr: (name: string, value: string) => void
   editSelectedComponentsStyle: (style: CSSProperties) => void
-  // 创建存储历史记录的数组， 选中的状态 -> selectedComponents 之所以需要单独存，在上一步、下一步这个过程当中，数组里面的组件是有可能发生变化的，比如：原先选中 10 个组件，这次变了，变成选中 1 个组件了，那这个时候选中状态的 selectedComponents 不变的话会出错
+  // 创建存储历史记录的数组， 之所以需要单独存，在上一步、下一步这个过程当中，数组里面的组件是有可能发生变化的，比如：原先选中 10 个组件，这次变了，变成选中 1 个组件了，那这个时候选中状态的 selectedComponents 不变的话会出错
   canvasChangeHistory: { canvas: ICanvas; selectedComponents: Set<number> }[]
   // 记录存储当前处于哪个历史记录的下标
   canvasChangeHistoryIndex: number
@@ -34,6 +35,12 @@ interface EditStoreState {
   recordCanvasPostionHistory: () => void
   getPrevCanvasHistory: () => void
   getNextCanvasHistory: () => void
+  deleteComponents: () => void
+  copyComponents: () => void
+  bringToBack: () => void
+  bringToFront: () => void
+  addIndex: () => void
+  minusIndex: () => void
 }
 
 export const useEditStore = create<EditStoreState>()(
@@ -258,6 +265,7 @@ export const useEditStore = create<EditStoreState>()(
           // 更新当前历史记录索引为新索引
           state.canvasChangeHistoryIndex = newIndex
         }),
+      // 获取下一个画布历史记录
       getNextCanvasHistory: () =>
         set((state) => {
           let newIndex = state.canvasChangeHistoryIndex + 1
@@ -277,6 +285,73 @@ export const useEditStore = create<EditStoreState>()(
           // 更新当前历史记录索引为新索引
           state.canvasChangeHistoryIndex = newIndex
         }),
+      // 删除选中组件
+      deleteComponents: () =>
+        set((state) => {
+          const selectedComponents = state.selectedComponents
+          state.canvas.components = state.canvas.components.filter(
+            (_, index) => !selectedComponents.has(index),
+          )
+          selectedComponents.clear()
+          state.recordCanvasHistory(state)
+        }),
+      // 复制选中组件
+      copyComponents: () =>
+        set((state) => {
+          const selectedComponents = state.selectedComponents
+          const newComponents: IComponentWithKey[] = []
+          // 获取当前画布组件的长度, 用于获取新复制组件的下标
+          let componentsLength = state.canvas.components.length - 1
+          // 存储新的选中组件索引集合
+          const newSelectedComponents: Set<number> = new Set()
+          selectedComponents.forEach((index) => {
+            const componentToCopy = cloneDeep(state.canvas.components[index])
+            if (componentToCopy.style) {
+              componentToCopy.style.top += 40
+              componentToCopy.style.left += 40
+            }
+            componentToCopy.key = crypto.randomUUID()
+            newComponents.push(componentToCopy)
+            componentsLength++
+            // 将新组件的索引添加到新的选中组件集合中
+            newSelectedComponents.add(componentsLength)
+          })
+          state.canvas.components = state.canvas.components.concat(newComponents)
+          // 更新选中组件索引集合为新的选中组件集合
+          state.selectedComponents = newSelectedComponents
+        }),
+      // 组件置顶
+      bringToFront: () =>
+        set((state) => {
+          const selectedComponentIndex = [...state.selectedComponents][0]
+          if (selectedComponentIndex === state.canvas.components.length - 1) {
+            return
+          }
+          state.canvas.components = state.canvas.components
+            .slice(0, selectedComponentIndex)
+            .concat(state.canvas.components.slice(selectedComponentIndex + 1))
+            .concat(state.canvas.components[selectedComponentIndex])
+          state.selectedComponents = new Set([state.canvas.components.length - 1])
+          state.recordCanvasHistory(state)
+        }),
+      // 组件置底
+      bringToBack: () =>
+        set((state) => {
+          const selectedComponentIndex = [...state.selectedComponents][0]
+          if (selectedComponentIndex === 0) {
+            return
+          }
+          state.canvas.components = [state.canvas.components[selectedComponentIndex]]
+            .concat(state.canvas.components.slice(0, selectedComponentIndex))
+            .concat(state.canvas.components.slice(selectedComponentIndex + 1))
+
+          state.selectedComponents = new Set([0])
+          state.recordCanvasHistory(state)
+        }),
+      // 组件上移一个层级
+      addIndex: () => set((state) => {}),
+      // 组件下移一个层级
+      minusIndex: () => set((state) => {}),
     })),
   ),
 )
