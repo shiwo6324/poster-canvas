@@ -137,7 +137,14 @@ const EditArea = () => {
         //   }}
         // />
       )}
-      {showContextMenu && <EditMenu selectedComponentsSize={size} style={{}} />}
+      {showContextMenu && (
+        <EditMenu
+          components={canvas.content.components}
+          selectedIndex={[...selectedComponents][0]}
+          selectedComponentsSize={size}
+          style={{}}
+        />
+      )}
       <FlexDots zoom={zoom} style={{ width, height }} />
     </div>
   )
