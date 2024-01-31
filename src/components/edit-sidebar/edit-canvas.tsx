@@ -5,10 +5,8 @@ import { ColorInput, DEFAULT_THEME, FileInput, NumberInput, TextInput } from '@m
 const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
   const { updateCanvasStyle, updateCanvasTitle } = useEditStore()
 
-  const {
-    title,
-    style: { width, height, backgroundColor },
-  } = canvas
+  const { title } = canvas
+  const { width, height, backgroundColor } = canvas.content.style
 
   const handleCanvasPropsChange = (
     // e: React.ChangeEvent<HTMLInputElement>,

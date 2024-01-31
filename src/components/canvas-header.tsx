@@ -11,13 +11,15 @@ import { toast } from 'sonner'
 import { useZoomStore } from 'src/store/zoom-store'
 
 const CanvasHeader = () => {
-  const { canvas, clearCanvas, getNextCanvasHistory, getPrevCanvasHistory } = useEditStore()
+  const { canvas, clearCanvas, getNextCanvasHistory, getPrevCanvasHistory, updateCanvasId } =
+    useEditStore()
   const { resetZoom } = useZoomStore()
   const navigate = useNavigate()
   const id = useCanvasId()
   const type = useCanvasType()
 
   const handleSaveCanvas = async () => {
+    const isNew = canvas.id == null
     await saveCanvas(
       {
         id,
@@ -26,8 +28,9 @@ const CanvasHeader = () => {
         title: canvas.title,
       },
       (_id) => {
-        if (id === null) {
-          navigate(`/?id=${_id}`)
+        if (isNew) {
+          updateCanvasId(_id)
+          navigate(`/edit?id=${_id}`)
         }
         toast.success('保存成功')
       },

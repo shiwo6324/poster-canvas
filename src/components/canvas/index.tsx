@@ -50,9 +50,13 @@ const Canvas = () => {
       await getCanvas(
         id,
         (res: any) => {
+          const content = JSON.parse(res.content)
+
           setCanvas({
-            ...JSON.parse(res.content),
+            ...content,
             title: res.title,
+            type: res.type,
+            id: res.id,
           })
           resetCanvasChangeHistory()
         },
@@ -123,13 +127,13 @@ const Canvas = () => {
         onDragOver={(e) => e.preventDefault()}
         className="org   relative    self-start  shadow-xl"
         style={{
-          ...canvas.style,
+          ...canvas.content.style,
           transformOrigin: '50% 0%',
           transform: `scale(${zoom / 100})`,
         }}
       >
         <EditArea />
-        {canvas.components.map((component, index) => (
+        {canvas.content.components.map((component, index) => (
           <CanvasItem
             isSelected={selectedComponents.has(index)}
             key={component.key}

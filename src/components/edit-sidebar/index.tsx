@@ -11,7 +11,7 @@ import EditMutiComponents from './edit-muti-components'
 const EditSidebar = () => {
   const { canvas, selectedComponents } = useEditStore()
   const index = [...selectedComponents][0]
-  const component = canvas.components[index]
+  const component = canvas.content.components[index]
 
   return (
     <div className="w-full">

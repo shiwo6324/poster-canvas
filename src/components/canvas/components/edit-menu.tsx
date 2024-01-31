@@ -1,5 +1,4 @@
 import { useEditStore } from '@/src/store/editStore'
-import { Style } from '@/src/types/editStoreTypes'
 import React from 'react'
 
 interface EditMenuProps {
@@ -8,7 +7,8 @@ interface EditMenuProps {
 }
 
 const EditMenu = ({ style, selectedComponentsSize }: EditMenuProps) => {
-  const { deleteComponents, copyComponents, bringToFront, bringToBack } = useEditStore()
+  const { deleteComponents, copyComponents, bringToFront, bringToBack, addIndex, minusIndex } =
+    useEditStore()
   if (selectedComponentsSize === 0) return null
 
   return (
@@ -23,8 +23,12 @@ const EditMenu = ({ style, selectedComponentsSize }: EditMenuProps) => {
         >
           删除组件
         </li>
-        <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100">上移一层</li>
-        <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100">下移一层</li>
+        <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={addIndex}>
+          上移一层
+        </li>
+        <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={minusIndex}>
+          下移一层
+        </li>
         <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={bringToFront}>
           置顶
         </li>

@@ -35,7 +35,7 @@ const EditPage = () => {
           className="flex w-full justify-center py-9 "
           style={{
             // 将 canvas 容器的高度乘以 canvas 的缩放比例， +100 的目的是底部留空间
-            minHeight: (zoom / 100) * canvas.style.height + 100,
+            minHeight: (zoom / 100) * canvas.content.style.height + 100,
           }}
           onClick={(e: any) => {
             setType(CompType.EMPTY)

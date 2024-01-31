@@ -4,11 +4,16 @@ import { CompType } from './const'
 export type Style = React.CSSProperties
 
 export interface ICanvas {
+  id: null | number
+  type: 'content' | 'template'
   title: string
-  style: Style
-  components: IComponentWithKey[]
+  content: IContent
 }
 
+export interface IContent {
+  components: IComponentWithKey[]
+  style: React.CSSProperties
+}
 export interface IComponent {
   type: CompType
   style: Style

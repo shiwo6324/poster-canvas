@@ -21,7 +21,7 @@ const EditArea = () => {
   const { zoom } = useZoomStore()
   const size = selectedComponents.size
   if (size === 0) return
-  const textComponent = canvas.components[[...selectedComponents][0]]
+  const textComponent = canvas.content.components[[...selectedComponents][0]]
   // 初始化边界值
   let top = 9999
   let left = 9999
@@ -30,7 +30,7 @@ const EditArea = () => {
 
   // 计算选中组件的边界值
   selectedComponents.forEach((index) => {
-    const component = canvas.components[index]
+    const component = canvas.content.components[index]
     top = Math.min(top, component.style.top as number)
     left = Math.min(left, component.style.left as number)
     // 需要 top/left 加上 height/width 的原因是，计算哪个组件在最下边/右边
