@@ -5,9 +5,9 @@ const AlignLines = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
   return (
     <>
       {/* 组件的中心 X 轴 */}
-      <Line id="lineX" style={{ left: 0, width: canvasStyle.width }} />
+      {/* <Line id="lineX" style={{ left: 0, width: canvasStyle.width }} /> */}
       {/* 组件的中心 Y 轴 */}
-      <Line id="lineY" style={{ top: 0, width: canvasStyle.height }} />
+      {/* <Line id="lineY" style={{ top: 0, width: canvasStyle.height }} /> */}
       {/* 中心 X 轴，对齐画布 */}
       <Line
         id="centerXLine"

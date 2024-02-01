@@ -483,15 +483,15 @@ export const useEditStore = create<EditStoreState>()(
 )
 
 function autoAlign(_distance: number, domId: string, handleAlign: () => void) {
-  const showDiff = 12
-  const adjustDiff = 3
+  const showDistance = 12
+  const adjustDistance = 3
   const distance = Math.abs(_distance)
   const line = document.getElementById(domId)
-  if (distance < showDiff) {
+  if (distance < showDistance) {
     // 显示参考线
     line.style.display = 'block'
   }
-  if (distance < adjustDiff) {
+  if (distance < adjustDistance) {
     // 自动吸附
     handleAlign()
   }
