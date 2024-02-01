@@ -132,7 +132,7 @@ const Canvas = () => {
           transform: `scale(${zoom / 100})`,
         }}
       >
-        <EditArea />
+        <EditArea canvasStyle={canvas.content.style} />
         {canvas.content.components.map((component, index) => (
           <CanvasItem
             isSelected={selectedComponents.has(index)}

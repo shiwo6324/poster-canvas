@@ -5,8 +5,9 @@ import { useZoomStore } from 'src/store/zoom-store'
 import FlexDots from './flex-dots'
 import { CompType } from '@/src/types/const'
 import EditMenu from './edit-menu'
+import AlignLines from '../../edit/align-lines'
 
-const EditArea = () => {
+const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
   const [textAreaFocused, setTextAreaFocused] = React.useState(false)
   const [showContextMenu, setShowContextMenu] = React.useState(false)
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
@@ -76,8 +77,11 @@ const EditArea = () => {
       // 更新鼠标 水平/垂直 位置，为下一次移动做准备
       startX = x
       startY = y
-    }, 20)
+    }, 10)
     const up = () => {
+      document.querySelectorAll('.alignLine').forEach((element) => {
+        ;(element as HTMLDivElement).style.display = 'none'
+      })
       document.removeEventListener('mousemove', move)
       document.removeEventListener('mouseup', up)
       recordCanvasPostionHistory()
@@ -86,67 +90,70 @@ const EditArea = () => {
     document.addEventListener('mouseup', up)
   }
   return (
-    <div
-      style={{ top, left, width, height, zIndex: 9999 }}
-      className="absolute cursor-move border-4 border-solid border-sky-500"
-      onMouseDown={handleMoveSelectedComponents}
-      onDoubleClick={() => setTextAreaFocused(true)}
-      onClick={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        setShowContextMenu(false)
-      }}
-      // onMouseLeave={() => setTextAreaFocused(false)}
-      onContextMenu={() => setShowContextMenu(true)}
-    >
-      {size === 1 && textComponent.type === CompType.TEXT && textAreaFocused && (
-        <textarea
-          ref={textareaRef}
-          defaultValue={textComponent.value}
-          onChange={(e) => {
-            const newValue = e.target.value
-            // 如果改变文本高度，则调整组件框高度
-            const textHeight = textareaRef?.current?.scrollHeight
-            updateSelectedComponentAttr('value', newValue)
-            updateSelectedComponentStyle({ height: textHeight })
-          }}
-          onBlur={() => {
-            // const newValue = e.target.value
-            setTextAreaFocused(false)
-            // updateSelectedComponentAttr('value', newValue)
-          }}
-          style={{
-            ...textComponent.style,
-            width: width - 8,
-            // height,
-            top: 0,
-            left: 0,
-          }}
-        />
+    <>
+      {size === 1 && <AlignLines canvasStyle={canvasStyle} />}
+      <div
+        style={{ top, left, width, height, zIndex: 9999 }}
+        className="absolute cursor-move border-4 border-solid border-sky-500"
+        onMouseDown={handleMoveSelectedComponents}
+        onDoubleClick={() => setTextAreaFocused(true)}
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          setShowContextMenu(false)
+        }}
+        // onMouseLeave={() => setTextAreaFocused(false)}
+        onContextMenu={() => setShowContextMenu(true)}
+      >
+        {size === 1 && textComponent.type === CompType.TEXT && textAreaFocused && (
+          <textarea
+            ref={textareaRef}
+            defaultValue={textComponent.value}
+            onChange={(e) => {
+              // const newValue = e.target.value
+              // 如果改变文本高度，则调整组件框高度
+              const textHeight = textareaRef?.current?.scrollHeight
+              // updateSelectedComponentAttr('value', newValue)
+              updateSelectedComponentStyle({ height: textHeight })
+            }}
+            onBlur={(e) => {
+              const newValue = e.target.value
+              setTextAreaFocused(false)
+              updateSelectedComponentAttr('value', newValue)
+            }}
+            style={{
+              ...textComponent.style,
+              width: width - 8,
+              // height,
+              top: 0,
+              left: 0,
+            }}
+          />
 
-        // <TextareaAutosize
-        //   value={textComponent.value}
-        //   style={{ ...textComponent.style, top: 1, left: 0.2 }}
-        //   onChange={(e) => {
-        //     updateSelectedComponentAttr('value', e.target.value)
-        //   }}
-        //   onHeightChange={(height) => {
-        //     updateSelectedComponentStyle({
-        //       height,
-        //     })
-        //   }}
-        // />
-      )}
-      {showContextMenu && (
-        <EditMenu
-          components={canvas.content.components}
-          selectedIndex={[...selectedComponents][0]}
-          selectedComponentsSize={size}
-          style={{}}
-        />
-      )}
-      <FlexDots zoom={zoom} style={{ width, height }} />
-    </div>
+          // <TextareaAutosize
+          //   value={textComponent.value}
+          //   style={{ ...textComponent.style, top: 1, left: 0.2 }}
+          //   onChange={(e) => {
+          //     updateSelectedComponentAttr('value', e.target.value)
+          //   }}
+          //   onHeightChange={(height) => {
+          //     updateSelectedComponentStyle({
+          //       height,
+          //     })
+          //   }}
+          // />
+        )}
+        {showContextMenu && (
+          <EditMenu
+            components={canvas.content.components}
+            selectedIndex={[...selectedComponents][0]}
+            selectedComponentsSize={size}
+            style={{}}
+          />
+        )}
+        <FlexDots zoom={zoom} style={{ width, height }} />
+      </div>
+    </>
   )
 }
 

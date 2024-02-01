@@ -42,6 +42,7 @@ interface EditStoreState {
   bringToFront: () => void
   addIndex: () => void
   minusIndex: () => void
+  alignToCanvas: (style: React.CSSProperties, component: IComponentWithKey) => void
 }
 
 export const useEditStore = create<EditStoreState>()(
@@ -155,7 +156,7 @@ export const useEditStore = create<EditStoreState>()(
               // 更新组件的样式属性
               component.style[key] += position[key]
             }
-
+            state.alignToCanvas(state.canvas.content.style, component)
             // 如果没有无效更新，则将更新后的组件替换回原来的位置
             if (!invalid) {
               state.canvas.content.components[index] = component
@@ -432,9 +433,69 @@ export const useEditStore = create<EditStoreState>()(
           // 记录操作历史
           state.recordCanvasHistory(state)
         }),
+      alignToCanvas: (canvaStyle, component) =>
+        set((state) => {
+          const componentStyle = component.style
+          // 中心 X 轴，组件距离中心点的距离小于 12 显示吸附线，距离小于 3 自动吸附组件到中心点
+          // 组件距离画布的 top + 组件的高度/2 - 画布的高度/2 得到组件中心点距离画布中间的距离
+          autoAlign(
+            componentStyle.top + componentStyle.height / 2 - canvaStyle.height / 2,
+            'centerXLine',
+            () => {
+              component.style.top = canvaStyle.height / 2 - component.style.height / 2
+            },
+          )
+          // 中心 Y 轴
+          autoAlign(
+            componentStyle.left + componentStyle.width / 2 - canvaStyle.width / 2,
+            'centerYLine',
+            () => {
+              component.style.left = canvaStyle.width / 2 - component.style.width / 2
+            },
+          )
+          // 对齐画布 top
+          autoAlign(componentStyle.top, 'canvasLineTop', () => {
+            component.style.top = 0
+          })
+          // 对齐画布 bottom
+          autoAlign(
+            componentStyle.top + componentStyle.height - canvaStyle.height,
+            'canvasLineBottom',
+            () => {
+              component.style.top = canvaStyle.height - componentStyle.height
+            },
+          )
+          // 对齐画布 left
+          autoAlign(componentStyle.left, 'canvasLineLeft', () => {
+            component.style.left = 0
+          })
+          // 对齐画布 right
+          autoAlign(
+            componentStyle.left + componentStyle.width - canvaStyle.width,
+            'canvasLineRight',
+            () => {
+              component.style.left = canvaStyle.width - componentStyle.width
+            },
+          )
+        }),
     })),
   ),
 )
+
+function autoAlign(_distance: number, domId: string, handleAlign: () => void) {
+  const showDiff = 12
+  const adjustDiff = 3
+  const distance = Math.abs(_distance)
+  const line = document.getElementById(domId)
+  if (distance < showDiff) {
+    // 显示参考线
+    line.style.display = 'block'
+  }
+  if (distance < adjustDiff) {
+    // 自动吸附
+    handleAlign()
+  }
+}
 
 // 避免物料选项栏重新渲染
 export const addComponent = (component: IComponent) => {
