@@ -6,6 +6,7 @@ import FlexDots from './flex-dots'
 import { CompType } from '@/src/types/const'
 import EditMenu from './edit-menu'
 import AlignLines from '../../edit/align-lines'
+import Rotate from '../../edit/rotate'
 
 const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
   const [textAreaFocused, setTextAreaFocused] = React.useState(false)
@@ -22,7 +23,7 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
   const { zoom } = useZoomStore()
   const size = selectedComponents.size
   if (size === 0) return
-  const textComponent = canvas.content.components[[...selectedComponents][0]]
+  const selectedComponent = canvas.content.components[[...selectedComponents][0]]
   // 初始化边界值
   let top = 9999
   let left = 9999
@@ -89,11 +90,12 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
     document.addEventListener('mousemove', move)
     document.addEventListener('mouseup', up)
   }
+  const transform = `rotate(${size === 1 ? selectedComponent.style.transform : 0}deg)`
   return (
     <>
       {size === 1 && <AlignLines canvasStyle={canvasStyle} />}
       <div
-        style={{ top, left, width, height, zIndex: 9999 }}
+        style={{ top, left, width, height, zIndex: 9999, transform }}
         className="absolute cursor-move border-4 border-solid border-sky-500"
         onMouseDown={handleMoveSelectedComponents}
         onDoubleClick={() => setTextAreaFocused(true)}
@@ -105,11 +107,11 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
         // onMouseLeave={() => setTextAreaFocused(false)}
         onContextMenu={() => setShowContextMenu(true)}
       >
-        {size === 1 && textComponent.type === CompType.TEXT && textAreaFocused && (
+        {size === 1 && selectedComponent.type === CompType.TEXT && textAreaFocused && (
           <textarea
             ref={textareaRef}
-            defaultValue={textComponent.value}
-            onChange={(e) => {
+            defaultValue={selectedComponent.value}
+            onChange={() => {
               // const newValue = e.target.value
               // 如果改变文本高度，则调整组件框高度
               const textHeight = textareaRef?.current?.scrollHeight
@@ -122,7 +124,7 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
               updateSelectedComponentAttr('value', newValue)
             }}
             style={{
-              ...textComponent.style,
+              ...selectedComponent.style,
               width: width - 8,
               // height,
               top: 0,
@@ -131,8 +133,8 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
           />
 
           // <TextareaAutosize
-          //   value={textComponent.value}
-          //   style={{ ...textComponent.style, top: 1, left: 0.2 }}
+          //   value={selectedComponent.value}
+          //   style={{ ...selectedComponent.style, top: 1, left: 0.2 }}
           //   onChange={(e) => {
           //     updateSelectedComponentAttr('value', e.target.value)
           //   }}
@@ -152,6 +154,7 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
           />
         )}
         <FlexDots zoom={zoom} style={{ width, height }} />
+        {size === 1 && <Rotate zoom={zoom} component={selectedComponent} />}
       </div>
     </>
   )

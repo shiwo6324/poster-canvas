@@ -26,11 +26,12 @@ const CanvasItem = React.memo(({ component, isSelected, index }: CanvasComponent
       setSelectedComponent(index)
     }
   }
+  const transform = `rotate(${component.style.transform}deg)`
 
   return (
     <div
       className={classNames('cpm ', isSelected && ' ')}
-      style={{ ...outerStyle, zIndex: isSelected ? 999 : index }}
+      style={{ ...outerStyle, transform, zIndex: isSelected ? 999 : index }}
       onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectComponent(e)}
     >
       <div className="overflow-hidden " style={innerStyle}>
