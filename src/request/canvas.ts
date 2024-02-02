@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { common, end, myAxios } from './index'
+import { ListItem } from '../pages/ListPage'
 
 // 查询, 没有设置登录权限
 export function getCanvas(
@@ -54,7 +55,30 @@ export function deleteCanvas(
   successCallback: () => void,
   failedCallback?: () => void,
 ) {
-  myAxios.post(end + '/api/web/content/delete', values).then((res) => {
+  myAxios.post(end + '/api/web/content/delete', { id: values }).then((res) => {
+    common(res, successCallback)
+  })
+}
+
+export function saveAsTemplate(
+  { item }: { item: ListItem },
+  successCallback: () => void,
+  failedCallback?: () => void,
+) {
+  myAxios
+    .post(end + '/api/web/content/save', {
+      id: null,
+      type: 'template',
+      title: item.title + '模板',
+      content: item.content,
+    })
+    .then((res) => {
+      common(res, successCallback)
+    })
+}
+
+export function fetchTemplates(successCallback: () => void, failedCallback?: () => void) {
+  myAxios.get(end + '/api/web/template/list?pageSize=1000').then((res) => {
     common(res, successCallback)
   })
 }

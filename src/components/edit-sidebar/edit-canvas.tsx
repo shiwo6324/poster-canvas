@@ -61,50 +61,6 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
         label="背景图片"
         description=" "
       />
-
-      {/* <div className="flex items-center gap-3">
-        <label htmlFor="" className="w-16">
-          标题
-        </label>
-        <TextInput size="md" />
-      </div>
-
-      <div className="flex items-center gap-3">
-        <label htmlFor="" className="w-16">
-          画布大小(px)
-        </label>
-        <TextInput size="md" />
-      </div>
-
-      <div className="flex items-center gap-3">
-        <label htmlFor="" className="w-16">
-          画布高度(px)
-        </label>
-        <TextInput size="md" />
-      </div>
-      <div className="flex items-center gap-3">
-        <label htmlFor="" className="w-16">
-          背景颜色
-        </label>
-        <ColorInput
-          className=" pl-2"
-          size="md"
-          placeholder="Pick color"
-          disallowInput
-          withEyeDropper={false}
-          swatches={[
-            ...DEFAULT_THEME.colors.red,
-            ...DEFAULT_THEME.colors.green,
-            ...DEFAULT_THEME.colors.blue,
-          ]}
-        />
-      </div>
-      <div className="flex items-center gap-3">
-        <label htmlFor="" className="w-16">
-          背景图片
-        </label>
-        <TextInput size="md" />
-      </div> */}
     </div>
   )
 }

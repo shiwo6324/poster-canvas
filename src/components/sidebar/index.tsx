@@ -11,6 +11,13 @@ const Sidebar = () => {
     <AppShell.Navbar p="md" w={'auto'} pos={'fixed'}>
       <Stack bg="var(--mantine-color-body)" align="center" gap="xs">
         <Button
+          className={classNames(type === CompType.TEMPLATE ? '' : 'text-slate-500')}
+          onClick={() => setType(CompType.TEMPLATE)}
+          variant="transparent"
+        >
+          模板
+        </Button>
+        <Button
           className={classNames(type === CompType.TEXT ? '' : 'text-slate-500')}
           onClick={() => setType(CompType.TEXT)}
           variant="transparent"

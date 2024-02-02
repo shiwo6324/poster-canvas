@@ -2,10 +2,12 @@ import { useEditStore } from '@/src/store/editStore'
 import { CompType } from '@/src/types/const'
 import { IComponent } from '@/src/types/editStoreTypes'
 import {
+  Button,
   ColorInput,
   DEFAULT_THEME,
   NativeSelect,
   NumberInput,
+  Select,
   TextInput,
   Textarea,
 } from '@mantine/core'
@@ -40,27 +42,37 @@ const EditComponent = ({ component }: { component: IComponent }) => {
   const handleUpdateValueProps = (value: string) => {
     updateSelectedComponentValue(value)
   }
-  const handleUpdateStyleProps = ({ name, value }: { name: string; value: string | number }) => {
-    updateSelectedComponentStyle({ [name]: value })
+  const handleUpdateStyleProps = (item: {
+    name: string
+    value: string | number | { name: string; value: string | number }[]
+  }) => {
+    const attrs = Array.isArray(item) ? item : [item]
+
+    const newStyle: React.CSSProperties = {}
+    attrs.forEach((attr) => {
+      const { name, value } = attr
+      newStyle[name] = value
+    })
+    updateSelectedComponentStyle(newStyle)
   }
   const handleUpdateAttrProps = ({ name, value }: { name: string; value: string | number }) => {
     updateSelectedComponentAttr(name, value)
   }
+  const handleAnimationChange = ({ name, value }: { name: string; value: string }) => {
+    const newStyle = {
+      animationName: value,
+      animationIterationCount:
+        style.animationIterationCount == undefined ? 1 : style.animationIterationCount,
+      animationDuration: style.animationDuration == undefined ? '1s' : style.animationDuration,
+      animationDelay: style.animationDelay == undefined ? 0 : style.animationDelay,
+      animationPlayState: 'running',
+    }
+    console.log(newStyle)
+
+    updateSelectedComponentStyle(newStyle)
+  }
   return (
     <div className="flex   h-[calc(100vh-100px)] flex-col gap-3 overflow-scroll px-3 py-3">
-      {/* {component.type === CompType.TEXT && (
-        <Textarea
-          ref={textareaRef}
-          label="内容"
-          description=" "
-          defaultValue={component.value}
-          onBlur={(e) => {
-            updateSelectedComponentAttr('value', e.target.value)
-            const textHeight = textareaRef?.current?.scrollHeight
-            updateSelectedComponentStyle({ height: textHeight })
-          }}
-        />
-      )} */}
       {component.type === CompType.IMAGE && (
         <TextInput
           label="描述"
@@ -112,13 +124,13 @@ const EditComponent = ({ component }: { component: IComponent }) => {
         />
       )}
       {component.type === CompType.TEXT && (
-        <NativeSelect
+        <Select
           label="装饰线"
           value={textDecorationLine}
-          onChange={(e) => {
+          onChange={(value) => {
             handleUpdateStyleProps({
               name: 'textDecoration',
-              value: e.target.value,
+              value: value,
             })
           }}
           data={[
@@ -147,17 +159,17 @@ const EditComponent = ({ component }: { component: IComponent }) => {
         />
       )}
 
-      <NativeSelect
+      <Select
         label="对齐页面"
         description=" "
-        onChange={(e) => {
+        onChange={(value) => {
           const newStyle: {
             left?: number | string
             right?: number | string
             top?: number | string
             bottom?: number | string
           } = {}
-          switch (e.target.value) {
+          switch (value) {
             case 'left':
               newStyle.left = 0
               break
@@ -211,12 +223,12 @@ const EditComponent = ({ component }: { component: IComponent }) => {
           description=" "
         />
       )}
-      <NativeSelect
+      <Select
         label="边框样式"
         value={borderStyle}
         defaultValue={borderStyle}
-        onChange={(e) => {
-          handleUpdateStyleProps({ name: 'borderStyle', value: e.target.value })
+        onChange={(value) => {
+          handleUpdateStyleProps({ name: 'borderStyle', value: value })
         }}
         data={[
           { label: '无', value: 'none' },
@@ -296,6 +308,78 @@ const EditComponent = ({ component }: { component: IComponent }) => {
         }}
         defaultValue={onClick}
       />
+      <Select
+        label="动画"
+        defaultValue={style.animationName || ''}
+        data={[
+          { label: '无动画', value: '' },
+          { label: '闪烁', value: 'flash' },
+          { label: '果冻', value: 'jelly' },
+          { label: '抖动', value: 'shake' },
+          { label: '左右摇摆', value: 'swing' },
+        ]}
+        onChange={(value) => {
+          handleAnimationChange({
+            name: 'animationName',
+            value: value,
+          })
+        }}
+      />
+      {style.animationName && (
+        <>
+          <NumberInput
+            defaultValue={style.animationDuration || 0}
+            label="动画持续时长(s)"
+            onChange={(value) => {
+              handleUpdateStyleProps({
+                name: 'animationDuration',
+                value: `${value}s`,
+              })
+            }}
+          />
+          <NumberInput
+            defaultValue={style.animationDelay}
+            label="动画延迟时间(s)"
+            onChange={(value) => {
+              handleUpdateStyleProps({
+                name: 'animationDelay',
+                value: `${value}s`,
+              })
+            }}
+          />
+          <NumberInput
+            defaultValue={
+              style.animationIterationCount === 'infinite' ? 999 : style.animationIterationCount
+            }
+            label="动画循环次数(次)"
+            onChange={(value) => {
+              handleUpdateStyleProps({
+                name: 'animationIterationCount',
+                value: value === '999' ? 'infinite' : value,
+              })
+            }}
+          />
+          <div>
+            <Button
+              onClick={() => {
+                const value = style.animationName
+                handleUpdateStyleProps({
+                  name: 'animationName',
+                  value: '',
+                })
+                setTimeout(() => {
+                  handleUpdateStyleProps([
+                    { name: 'animationName', value },
+                    { name: 'animationPlayState', value: 'running' },
+                  ])
+                })
+              }}
+            >
+              重新演示动画
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   )
 }

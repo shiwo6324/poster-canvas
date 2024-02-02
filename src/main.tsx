@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import '@mantine/core/styles.css'
+import './animation.css'
 import { MantineProvider } from '@mantine/core'
 import { Toaster } from 'sonner'
 

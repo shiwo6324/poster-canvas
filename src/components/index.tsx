@@ -1,12 +1,12 @@
 import React from 'react'
 import { addComponent, useEditStore } from 'src/store/editStore'
-import CanvasItem from './components/canvas-item'
+import CanvasItem from './canvas/components/canvas-item'
 import { toast } from 'sonner'
 import { getCanvas } from 'src/request/canvas'
 import { useCanvasId } from 'src/hooks/useCanvasIdAndType'
 import { useClickOutside, useHotkeys } from '@mantine/hooks'
-import EditArea from './components/edit-area'
-import Zoom from './components/zoom'
+import EditArea from './canvas/components/edit-area'
+import Zoom from './canvas/components/zoom'
 import { useZoomStore } from 'src/store/zoom-store'
 
 const Canvas = () => {

@@ -25,6 +25,7 @@ interface EditStoreState {
   updateSelectedComponentRotateStyle: (style: CSSProperties) => void
   updateSelectedComponentAttr: (name: string, value: string) => void
   editSelectedComponentsStyle: (style: CSSProperties) => void
+  updateSelectedComponentStyle: (style: React.CSSProperties) => void
   // 创建存储历史记录的数组， 之所以需要单独存，在上一步、下一步这个过程当中，数组里面的组件是有可能发生变化的，比如：原先选中 10 个组件，这次变了，变成选中 1 个组件了，那这个时候选中状态的 selectedComponents 不变的话会出错
   canvasChangeHistory: { canvas: ICanvas; selectedComponents: Set<number> }[]
   // 记录存储当前处于哪个历史记录的下标
@@ -43,6 +44,7 @@ interface EditStoreState {
   addIndex: () => void
   minusIndex: () => void
   alignToCanvas: (style: React.CSSProperties, component: IComponentWithKey) => void
+  addTemplateToCanvas: (canvas: ICanvas) => void
 }
 
 export const useEditStore = create<EditStoreState>()(
@@ -486,6 +488,17 @@ export const useEditStore = create<EditStoreState>()(
               component.style.left = canvaStyle.width - componentStyle.width
             },
           )
+        }),
+      addTemplateToCanvas: (canvas) =>
+        set((state) => {
+          const content = JSON.parse(canvas.content)
+
+          state.canvas.content = content
+          state.canvas.content.components = content.cmps
+          state.canvas.title = canvas.title + '副本'
+          state.canvas.type = 'content'
+          // state.selectedComponents.clear()
+          // state.recordCanvasHistory(state)
         }),
     })),
   ),

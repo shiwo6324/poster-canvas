@@ -1,0 +1,85 @@
+@keyframes flash {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+
+@keyframes jelly {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  25%,
+  75% {
+    transform: scale(1.25);
+  }
+  50% {
+    transform: scale(0.75);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25%,
+  75% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes swing {
+  20%,
+  40%,
+  60%,
+  80%,
+  100% {
+    transform-origin: top center;
+    transform: rotate(0);
+  }
+  20% {
+    transform: rotate(15deg);
+  }
+  40% {
+    transform: rotate(-10deg);
+  }
+  60% {
+    transform: rotate(5deg);
+  }
+  80% {
+    transform: rotate(-5deg);
+  }
+}
+
+/* You can add more keyframes for other animations as needed */
+
+/* Define classes to apply the animations */
+.none {
+  animation: none;
+}
+
+.flash {
+  animation: flash 1s infinite;
+}
+
+.jelly {
+  animation: jelly 1s infinite;
+}
+
+.shake {
+  animation: shake 1s infinite;
+}
+
+.swing {
+  animation: swing 1s infinite;
+}

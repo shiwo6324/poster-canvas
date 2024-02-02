@@ -1,7 +1,12 @@
 import { CompType } from 'src/types/const'
 import { create } from 'zustand'
 
-type SidebarType = CompType.IMAGE | CompType.TEXT | CompType.GRAPH | CompType.EMPTY
+type SidebarType =
+  | CompType.IMAGE
+  | CompType.TEXT
+  | CompType.GRAPH
+  | CompType.TEMPLATE
+  | CompType.EMPTY
 
 interface sidebarTypeState {
   type: SidebarType
