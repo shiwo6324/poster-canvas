@@ -569,6 +569,32 @@ export const addComponent = (component: IComponent) => {
     // state.canvasChangeHistoryIndex++
   })
 }
+
+// 初始化/卸载 画布
+export const initCanvas = () => {
+  useEditStore.setState((state) => {
+    state.canvas = {
+      id: null,
+      title: '未命名',
+      type: 'content',
+      content: getDefaultCanvasContent(),
+    }
+    state.hasSaved = true
+    state.selectedComponents = new Set()
+    state.canvasChangeHistory = [
+      {
+        canvas: {
+          id: null,
+          title: '未命名',
+          type: 'content',
+          content: getDefaultCanvasContent(),
+        },
+        selectedComponents: new Set(),
+      },
+    ]
+    state.canvasChangeHistoryIndex = 0
+  })
+}
 // 初始化画布
 function getDefaultCanvasContent(): IContent {
   return {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { addComponent, useEditStore } from 'src/store/editStore'
+import { addComponent, initCanvas, useEditStore } from 'src/store/editStore'
 import CanvasItem from './canvas/components/canvas-item'
 import { toast } from 'sonner'
 import { getCanvas } from 'src/request/canvas'
@@ -71,6 +71,9 @@ const Canvas = () => {
 
   React.useEffect(() => {
     fetchCanvas()
+    return () => {
+      initCanvas()
+    }
   }, [])
 
   const onDrop = (e: any) => {
