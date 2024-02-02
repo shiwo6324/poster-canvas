@@ -10,11 +10,17 @@ enableMapSet()
 
 interface EditStoreState {
   canvas: ICanvas
+  selectedComponents: Set<number>
+  canvasChangeHistory: { canvas: ICanvas; selectedComponents: Set<number> }[]
+  // 创建存储历史记录的数组， 之所以需要单独存，在上一步、下一步这个过程当中，数组里面的组件是有可能发生变化的，比如：原先选中 10 个组件，这次变了，变成选中 1 个组件了，那这个时候选中状态的 selectedComponents 不变的话会出错
+  // 记录存储当前处于哪个历史记录的下标
+  canvasChangeHistoryIndex: number
+  maxHistory: number
+  hasSaved: boolean
   setCanvas: (canvas: ICanvas) => void
   clearCanvas: () => void
   updateCanvasId: (id: number) => void
   addComponent: (component: IComponent) => void
-  selectedComponents: Set<number>
   setSelectedComponents: (indexes: number[]) => void
   setSelectedComponent: (index: number) => void
   selectAllComponents: () => void
@@ -26,11 +32,6 @@ interface EditStoreState {
   updateSelectedComponentAttr: (name: string, value: string) => void
   editSelectedComponentsStyle: (style: CSSProperties) => void
   updateSelectedComponentStyle: (style: React.CSSProperties) => void
-  // 创建存储历史记录的数组， 之所以需要单独存，在上一步、下一步这个过程当中，数组里面的组件是有可能发生变化的，比如：原先选中 10 个组件，这次变了，变成选中 1 个组件了，那这个时候选中状态的 selectedComponents 不变的话会出错
-  canvasChangeHistory: { canvas: ICanvas; selectedComponents: Set<number> }[]
-  // 记录存储当前处于哪个历史记录的下标
-  canvasChangeHistoryIndex: number
-  maxHistory: number
   setChangeHistoryIndex: (index: number) => void
   resetCanvasChangeHistory: () => void
   recordCanvasHistory: (history: EditStoreState) => void
@@ -45,6 +46,7 @@ interface EditStoreState {
   minusIndex: () => void
   alignToCanvas: (style: React.CSSProperties, component: IComponentWithKey) => void
   addTemplateToCanvas: (canvas: ICanvas) => void
+  setSaveCanvas: (flag: boolean) => void
 }
 
 export const useEditStore = create<EditStoreState>()(
@@ -70,9 +72,11 @@ export const useEditStore = create<EditStoreState>()(
       canvasChangeHistoryIndex: 0,
       selectedComponents: new Set(),
       maxHistory: 100,
+      hasSaved: true,
       updateCanvasId: (id) =>
         set((state) => {
           state.canvas.id = id
+          state.hasSaved = false
         }),
       addComponent: (component) =>
         set((state) => {
@@ -92,7 +96,9 @@ export const useEditStore = create<EditStoreState>()(
             type: 'content',
             content: getDefaultCanvasContent(),
           }
-          state.selectedComponents = new Set()
+          // state.selectedComponents = new Set()
+          state.hasSaved = false
+          state.selectedComponents.clear()
           state.recordCanvasHistory(state)
         }),
       // 选中单个， 如果 index 为 -1，则取消选中
@@ -107,6 +113,7 @@ export const useEditStore = create<EditStoreState>()(
               state.selectedComponents.clear()
             }
           }
+          state.hasSaved = false
         }),
       // 组件多选功能
       // 如果再次点击已经选中的组件，则取消选中
@@ -157,6 +164,7 @@ export const useEditStore = create<EditStoreState>()(
 
               // 更新组件的样式属性
               component.style[key] += position[key]
+              state.hasSaved = false
             }
             state.alignToCanvas(state.canvas.content.style, component)
             // 如果没有无效更新，则将更新后的组件替换回原来的位置
@@ -170,17 +178,20 @@ export const useEditStore = create<EditStoreState>()(
         set((state) => {
           Object.assign(state.canvas.content.style, style)
           state.recordCanvasHistory(state)
+          state.hasSaved = false
         }),
       // 修改画布的标题
       updateCanvasTitle: (title) =>
         set((state) => {
           state.canvas.title = title
           state.recordCanvasHistory(state)
+          state.hasSaved = false
         }),
       // 修改组件的 value
       updateSelectedComponentValue: (value) =>
         set((state) => {
           state.canvas.content.components[0].value = value
+          state.hasSaved = false
         }),
       // 修改组件的样式
       updateSelectedComponentStyle: (style) =>
@@ -189,6 +200,7 @@ export const useEditStore = create<EditStoreState>()(
           if (!(typeof componentIndex === 'number' && componentIndex > -1)) return
           Object.assign(state.canvas.content.components[componentIndex].style, style)
           state.recordCanvasHistory(state)
+          state.hasSaved = false
         }),
       updateSelectedComponentRotateStyle: (style) =>
         set((state) => {
@@ -196,6 +208,8 @@ export const useEditStore = create<EditStoreState>()(
           if (!(typeof componentIndex === 'number' && componentIndex > -1)) return
 
           Object.assign(state.canvas.content.components[componentIndex].style, style)
+          state.hasSaved = false
+
           // state.recordCanvasHistory(state)
         }),
       // 修改组件的属性
@@ -206,6 +220,7 @@ export const useEditStore = create<EditStoreState>()(
 
           state.canvas.content.components[componentIndex][name] = value
           state.recordCanvasHistory(state)
+          state.hasSaved = false
         }),
       // 修改多个组件的样式
       editSelectedComponentsStyle: (style) =>
@@ -230,6 +245,8 @@ export const useEditStore = create<EditStoreState>()(
               // 其他情况，直接应用选择的样式
               Object.assign(componentStyle, style)
             }
+            state.hasSaved = false
+
             state.canvas.content.components[index].style = componentStyle
             state.recordCanvasHistory(state)
           })
@@ -242,10 +259,12 @@ export const useEditStore = create<EditStoreState>()(
               selectedComponents: state.selectedComponents,
             },
           ]
+          state.hasSaved = false
         }),
       setChangeHistoryIndex: (index) =>
         set((state) => {
           state.canvasChangeHistoryIndex = index
+          state.hasSaved = false
         }),
 
       // 记录画布的操作历史
@@ -279,6 +298,7 @@ export const useEditStore = create<EditStoreState>()(
             return
           }
           state.recordCanvasHistory(state)
+          state.hasSaved = false
         }),
       // 获取上一个画布历史记录
       getPrevCanvasHistory: () =>
@@ -301,6 +321,7 @@ export const useEditStore = create<EditStoreState>()(
           state.selectedComponents = item.selectedComponents
           // 更新当前历史记录索引为新索引
           state.canvasChangeHistoryIndex = newIndex
+          state.hasSaved = false
         }),
       // 获取下一个画布历史记录
       getNextCanvasHistory: () =>
@@ -321,6 +342,7 @@ export const useEditStore = create<EditStoreState>()(
           state.selectedComponents = item.selectedComponents
           // 更新当前历史记录索引为新索引
           state.canvasChangeHistoryIndex = newIndex
+          state.hasSaved = false
         }),
       // 删除选中组件
       deleteComponents: () =>
@@ -329,6 +351,7 @@ export const useEditStore = create<EditStoreState>()(
           state.canvas.content.components = state.canvas.content.components.filter(
             (_, index) => !selectedComponents.has(index),
           )
+          state.hasSaved = false
           selectedComponents.clear()
           state.recordCanvasHistory(state)
         }),
@@ -352,6 +375,7 @@ export const useEditStore = create<EditStoreState>()(
             componentsLength++
             // 将新组件的索引添加到新的选中组件集合中
             newSelectedComponents.add(componentsLength)
+            state.hasSaved = false
           })
           state.canvas.content.components = state.canvas.content.components.concat(newComponents)
           // 更新选中组件索引集合为新的选中组件集合
@@ -370,6 +394,7 @@ export const useEditStore = create<EditStoreState>()(
             .concat(state.canvas.content.components[selectedComponentIndex])
           state.selectedComponents = new Set([state.canvas.content.components.length - 1])
           state.recordCanvasHistory(state)
+          state.hasSaved = false
         }),
       // 组件置底
       bringToBack: () =>
@@ -386,6 +411,7 @@ export const useEditStore = create<EditStoreState>()(
 
           state.selectedComponents = new Set([0])
           state.recordCanvasHistory(state)
+          state.hasSaved = false
         }),
       // 组件上移一个层级
       // 和后一个元素交换位置
@@ -416,6 +442,7 @@ export const useEditStore = create<EditStoreState>()(
 
           // 记录操作历史
           state.recordCanvasHistory(state)
+          state.hasSaved = false
         }),
       // 组件下移一个层级
       // 和前一个元素交换位置
@@ -443,10 +470,13 @@ export const useEditStore = create<EditStoreState>()(
 
           // 记录操作历史
           state.recordCanvasHistory(state)
+          state.hasSaved = false
         }),
       alignToCanvas: (canvaStyle, component) =>
         set((state) => {
           const componentStyle = component.style
+          state.hasSaved = false
+
           // 中心 X 轴，组件距离中心点的距离小于 12 显示吸附线，距离小于 3 自动吸附组件到中心点
           // 组件距离画布的 top + 组件的高度/2 - 画布的高度/2 得到组件中心点距离画布中间的距离
           autoAlign(
@@ -497,8 +527,13 @@ export const useEditStore = create<EditStoreState>()(
           state.canvas.content.components = content.cmps
           state.canvas.title = canvas.title + '副本'
           state.canvas.type = 'content'
-          // state.selectedComponents.clear()
-          // state.recordCanvasHistory(state)
+          state.selectedComponents.clear()
+          state.recordCanvasHistory(state)
+          state.hasSaved(false)
+        }),
+      setSaveCanvas: (flag) =>
+        set((state) => {
+          state.hasSaved = flag
         }),
     })),
   ),
@@ -526,6 +561,7 @@ export const addComponent = (component: IComponent) => {
     // 添加组件自动进入编辑状态
     state.selectedComponents = new Set([state.canvas.content.components.length - 1])
     state.recordCanvasHistory(state)
+    state.hasSaved = false
     // state.canvasChangeHistory.push({
     //   canvas: state.canvas,
     //   selectedComponents: state.selectedComponents,
