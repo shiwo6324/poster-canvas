@@ -98,7 +98,11 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
         style={{ top, left, width, height, zIndex: 9999, transform }}
         className="absolute cursor-move border-4 border-solid border-sky-500"
         onMouseDown={handleMoveSelectedComponents}
-        onDoubleClick={() => setTextAreaFocused(true)}
+        onDoubleClick={() => {
+          if (selectedComponent.type === CompType.TEXT) {
+            setTextAreaFocused(true)
+          }
+        }}
         onClick={(e) => {
           e.preventDefault()
           e.stopPropagation()
