@@ -122,13 +122,20 @@ export const useEditStore = create<EditStoreState>()(
       // 如果再次点击已经选中的组件，则取消选中
       setSelectedComponents: (indexes) =>
         set((state) => {
+          const components = state.canvas.content.components
+          // 如果此时已经有组合子组件被选中，不允许和其它组件一起选中
+          if (state.selectedComponents.size === 1) {
+            const selectedIndex = [...state.selectedComponents][0]
+            const selectedComponent = components[selectedIndex]
+            if (selectedComponent.groupKey) {
+              state.selectedComponents = new Set()
+            }
+          }
           if (indexes) {
             indexes.forEach((index) => {
               if (state.selectedComponents.has(index)) {
-                // 取消选中
                 state.selectedComponents.delete(index)
               } else {
-                // 选中
                 state.selectedComponents.add(index)
               }
             })
@@ -138,63 +145,40 @@ export const useEditStore = create<EditStoreState>()(
       // 全部选中
       selectAllComponents: () =>
         set((state) => {
-          const length = state.canvas.content.components.length
-          state.selectedComponents = new Set(Array.from({ length }, (_, index) => index))
+          const components = state.canvas.content.components
+          const newSelectedComponents: Set<number> = new Set()
+          for (let index = 0; index < components.length; index++) {
+            // 把组合组件的子组件排除
+            if (components[index].groupKey) {
+              continue
+            }
+            newSelectedComponents.add(index)
+          }
+          state.selectedComponents = newSelectedComponents
+          // new Set(Array.from({ length }, (_, index) => index))
         }),
       // 修改选中组件在画布中的位置
       // 根据改变的量来修改
       updateSelectedComponentsPosition: (position) =>
         set((state) => {
-          // 遍历编辑区域中的组件
-          // const isGroupComponent =
-          //   state.canvas.content.components[[...state.selectedComponents][0]].type ===
-          //   CompType.GROUP
-          // const map = getComponentsMap(state.canvas.content.components)
-          // if (isGroupComponent) {
-          //   const groupComponent = state.canvas.content.components[[...state.selectedComponents][0]]
-          //   groupComponent.groupComponentKeys.forEach((key) => {
-          //     // 制作组件的副本
-          //     const component = state.canvas.content.components[map.get(key)]
-
-          //     // 用于标记是否存在无效的更新
-          //     let invalid = false
-
-          //     // 遍历传入的位置对象
-          //     for (const key in position) {
-          //       // 检查是否更新宽度或高度，并且更新后的值小于 2
-          //       if (
-          //         (key === 'width' || key === 'height') &&
-          //         component.style[key] + position[key] < 2
-          //       ) {
-          //         // 存在无效的更新
-          //         invalid = true
-          //         break
-          //       }
-
-          //       // 更新组件的样式属性
-          //       component.style[key] += position[key]
-          //       state.hasSaved = false
-          //     }
-          //     state.alignToCanvas(state.canvas.content.style, component)
-          //     // 如果没有无效更新，则将更新后的组件替换回原来的位置
-          //     if (!invalid) {
-          //       // state.canvas.content.components[index] = component
-          //     }
-          //   })
-          // }
+          const { components } = state.canvas.content
+          const map = getComponentsMap(state.canvas.content.components)
+          // 存储下标，组合组件的子组件、组合组件的父组件、普通组件
+          const newSelectedComponents: Set<number> = new Set()
           state.selectedComponents.forEach((index) => {
-            //   const isGroupComponent =
-            //   state.canvas.content.components[[...state.selectedComponents][0]].type ===
-            //   CompType.GROUP
-            // const map = getComponentsMap(state.canvas.content.components)
-            // if(isGroupComponent){
+            const component = components[index]
+            if (component.type === CompType.GROUP) {
+              component.groupComponentKeys?.forEach((key) => {
+                newSelectedComponents.add(map.get(key))
+              })
+            }
+            newSelectedComponents.add(index)
+          })
 
-            // }
-            // 制作组件的副本
-            const component = { ...state.canvas.content.components[index] }
+          newSelectedComponents.forEach((index) => {
+            const component = components[index]
             // 用于标记是否存在无效的更新
             let invalid = false
-
             // 遍历传入的位置对象
             for (const key in position) {
               // 检查是否更新宽度或高度，并且更新后的值小于 2
@@ -209,13 +193,29 @@ export const useEditStore = create<EditStoreState>()(
 
               // 更新组件的样式属性
               component.style[key] += position[key]
-              state.hasSaved = false
             }
-            state.alignToCanvas(state.canvas.content.style, component)
+            if (newSelectedComponents.size === 1) {
+              state.alignToCanvas(state.canvas.content.style, component)
+            }
             // 如果没有无效更新，则将更新后的组件替换回原来的位置
             if (!invalid) {
               state.canvas.content.components[index] = component
             }
+            // 移动或者拉伸单个子组件之后，父组件的宽高和位置也会发生变化
+            // 重新计算组合组件的位置和宽高
+
+            if (newSelectedComponents.size === 1 && component.groupKey) {
+              // 找到父组件
+              const groupIndex = map.get(component.groupKey)
+              const group = components[groupIndex]
+              const newSelectedComponents: Set<number> = new Set()
+              group.groupComponentKeys?.forEach((key) => {
+                newSelectedComponents.add(map.get(key))
+              })
+              Object.assign(group.style, useEditAreaStyle(components, newSelectedComponents))
+            }
+            state.canvas.content.components = components
+            state.hasSaved = false
           })
         }),
       // 修改画布的样式
