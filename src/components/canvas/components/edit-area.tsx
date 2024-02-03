@@ -24,7 +24,7 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
   const size = selectedComponents.size
   if (size === 0) return
   const selectedComponent = canvas.content.components[[...selectedComponents][0]]
-  // 初始化边界值
+  // 初始化边界值,极值
   let top = 9999
   let left = 9999
   let bottom = -9999

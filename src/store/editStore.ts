@@ -1,3 +1,4 @@
+import { defaultComponentStyle } from './../utils/const'
 import { ICanvas, IComponent, IComponentWithKey, IContent } from 'src/types/editStoreTypes'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
@@ -5,6 +6,8 @@ import { devtools } from 'zustand/middleware'
 import { enableMapSet } from 'immer'
 import { CSSProperties } from 'react'
 import { cloneDeep } from 'lodash'
+import { CompType } from '../types/const'
+import { useEditAreaStyle } from '../hooks/useEditAreaStyle'
 
 enableMapSet()
 
@@ -143,10 +146,52 @@ export const useEditStore = create<EditStoreState>()(
       updateSelectedComponentsPosition: (position) =>
         set((state) => {
           // 遍历编辑区域中的组件
+          // const isGroupComponent =
+          //   state.canvas.content.components[[...state.selectedComponents][0]].type ===
+          //   CompType.GROUP
+          // const map = getComponentsMap(state.canvas.content.components)
+          // if (isGroupComponent) {
+          //   const groupComponent = state.canvas.content.components[[...state.selectedComponents][0]]
+          //   groupComponent.groupComponentKeys.forEach((key) => {
+          //     // 制作组件的副本
+          //     const component = state.canvas.content.components[map.get(key)]
+
+          //     // 用于标记是否存在无效的更新
+          //     let invalid = false
+
+          //     // 遍历传入的位置对象
+          //     for (const key in position) {
+          //       // 检查是否更新宽度或高度，并且更新后的值小于 2
+          //       if (
+          //         (key === 'width' || key === 'height') &&
+          //         component.style[key] + position[key] < 2
+          //       ) {
+          //         // 存在无效的更新
+          //         invalid = true
+          //         break
+          //       }
+
+          //       // 更新组件的样式属性
+          //       component.style[key] += position[key]
+          //       state.hasSaved = false
+          //     }
+          //     state.alignToCanvas(state.canvas.content.style, component)
+          //     // 如果没有无效更新，则将更新后的组件替换回原来的位置
+          //     if (!invalid) {
+          //       // state.canvas.content.components[index] = component
+          //     }
+          //   })
+          // }
           state.selectedComponents.forEach((index) => {
+            //   const isGroupComponent =
+            //   state.canvas.content.components[[...state.selectedComponents][0]].type ===
+            //   CompType.GROUP
+            // const map = getComponentsMap(state.canvas.content.components)
+            // if(isGroupComponent){
+
+            // }
             // 制作组件的副本
             const component = { ...state.canvas.content.components[index] }
-
             // 用于标记是否存在无效的更新
             let invalid = false
 
@@ -348,9 +393,74 @@ export const useEditStore = create<EditStoreState>()(
       deleteComponents: () =>
         set((state) => {
           const selectedComponents = state.selectedComponents
+          // 存储组合组件中待删除的子组件
+          const newSelectedComponents: Set<number> = new Set()
+          const map = getComponentsMap(state.canvas.content.components)
+          state.selectedComponents.forEach((index) => {
+            const component = state.canvas.content.components[index]
+            if (component.type === CompType.GROUP) {
+              component.groupComponentKeys?.forEach((key) => {
+                newSelectedComponents.add(map.get(key))
+              })
+            }
+            newSelectedComponents.add(index)
+          })
+          // 当删除单个组合组件的子节点之后，需要调整父组件的位置和宽高
+          // 为在删除单个之后，cmpsIndex会发生变化，为了复用map和cmps，我们在这里先调整父组件的位置和宽高
+          if (newSelectedComponents.size === 1) {
+            const child = state.canvas.content.components[[...newSelectedComponents][0]]
+            // child 是要被删除的组件
+            // 所以接下来要调整矩形，这个矩形的位置和宽高根据除 child 之外的组合子组件来计算
+            if (child.groupKey) {
+              const groupIndex = map.get(child.groupKey)
+              const group = state.canvas.content.components[groupIndex]
+              const newSelectedComponents: Set<number> = new Set()
+              group.groupComponentKeys?.forEach((key) => {
+                if (key !== child.key) {
+                  newSelectedComponents.add(map.get(key))
+                }
+              })
+              Object.assign(
+                group.style,
+                useEditAreaStyle(state.canvas.content.components, newSelectedComponents),
+              )
+            }
+          }
           state.canvas.content.components = state.canvas.content.components.filter(
-            (_, index) => !selectedComponents.has(index),
+            (component, index) => {
+              const del = newSelectedComponents.has(index)
+              if (del) {
+                // 如果这个组件是组合子组件
+                const groupKey = component.groupKey
+                if (groupKey) {
+                  const groupChildComponentIndex = map.get(groupKey)
+                  if (!newSelectedComponents.has(groupChildComponentIndex)) {
+                    const group = state.canvas.content.components[groupChildComponentIndex]
+                    const set = new Set(group.groupComponentKeys)
+                    set.delete(component.key)
+                    group.groupComponentKeys = [...set]
+                  }
+                }
+              }
+              if (component.type === CompType.GROUP) {
+                const { groupComponentKeys } = component
+                const length = groupComponentKeys!.length
+                if (length < 2) {
+                  if (length === 1) {
+                    const singleComponentIndex = map.get(groupComponentKeys[0])
+                    state.canvas.content.components[singleComponentIndex].groupKey = undefined
+                  }
+                  return false
+                }
+              }
+              return !del
+            },
           )
+
+          // state.canvas.content.components = state.canvas.content.components.filter(
+          //   (_, index) => !selectedComponents.has(index),
+          // )
+
           state.hasSaved = false
           selectedComponents.clear()
           state.recordCanvasHistory(state)
@@ -474,6 +584,7 @@ export const useEditStore = create<EditStoreState>()(
         }),
       alignToCanvas: (canvaStyle, component) =>
         set((state) => {
+          if (state.selectedComponents.size > 1) return
           const componentStyle = component.style
           state.hasSaved = false
 
@@ -595,6 +706,95 @@ export const initCanvas = () => {
     state.canvasChangeHistoryIndex = 0
   })
 }
+// 组合组件
+// 多个子组件组合到一个组合组件里
+// 如果子组件本身就是组合组件，那么需要把这个组合组件的子组件筛选取出来，
+// 最后再把所有子组件放到一个组合组件里。最后不要忘记把原先的组合组件删除
+export const groupSelectedComponents = () => {
+  useEditStore.setState((state) => {
+    const { components } = state.canvas.content
+    const map = getComponentsMap(components)
+    const { top, left, width, height } = useEditAreaStyle(components, state.selectedComponents)
+    // 生成一个父组件
+    const groupComponent: IComponentWithKey = {
+      type: CompType.GROUP,
+      key: crypto.randomUUID(),
+      style: {
+        ...defaultComponentStyle,
+        top,
+        left,
+        width,
+        height,
+      },
+      groupComponentKeys: [],
+    }
+
+    state.selectedComponents.forEach((index) => {
+      const component = components[index]
+      // 如果组件本身是组合组件，遍历查找该组合组件的子组件
+      if (component.type === CompType.GROUP) {
+        component.groupComponentKeys?.forEach((key) => {
+          const childIndex = map.get(key)
+          const child = components[childIndex]
+          groupComponent.groupComponentKeys?.push(child.key)
+          child.groupKey = groupComponent.key
+          map.delete(key)
+        })
+      } else {
+        // 组合所有子组件
+
+        groupComponent.groupComponentKeys?.push(component.key)
+        component.groupKey = groupComponent.key
+      }
+    })
+    // 删除老的组合组件
+    components.filter(
+      (component, index) =>
+        !(state.selectedComponents.has(index) && component.type === CompType.GROUP),
+    )
+
+    components.push(groupComponent)
+    state.canvas.content.components = components
+    state.hasSaved = false
+    state.selectedComponents = new Set([components.length - 1])
+    state.recordCanvasHistory(state)
+  })
+}
+export const cancelGroupSelectedComponents = () => {
+  useEditStore.setState((state) => {
+    // 1. 拆分子组件
+    // 2. 删除父组件
+    // 3. 选中子组件
+    let { components } = state.canvas.content
+    const map = getComponentsMap(components)
+    const newSelectedComponents: Set<number> = new Set()
+    const selectedComponentIndex = [...state.selectedComponents][0]
+    const selectedGroup = components[selectedComponentIndex]
+    selectedGroup.groupComponentKeys?.forEach((key) => {
+      const componentIndex = map.get(key)
+      const component = components[componentIndex]
+      component.groupKey = undefined
+      newSelectedComponents.add(componentIndex)
+    })
+    // 删除父组件
+    components = components
+      .slice(0, selectedComponentIndex)
+      .concat(components.slice(selectedComponentIndex + 1))
+    state.canvas.content.components = components
+    state.hasSaved = false
+    state.selectedComponents = newSelectedComponents
+    state.recordCanvasHistory(state)
+  })
+}
+
+function getComponentsMap(components: IComponentWithKey[]) {
+  const map = new Map()
+  components.forEach((component, index) => {
+    map.set(component.key, index)
+  })
+  return map
+}
+
 // 初始化画布
 function getDefaultCanvasContent(): IContent {
   return {

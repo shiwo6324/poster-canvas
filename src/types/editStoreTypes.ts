@@ -17,8 +17,10 @@ export interface IContent {
 export interface IComponent {
   type: CompType
   style: Style
-  value: string
+  value?: string
   onClick?: string
+  groupKey?: string
+  groupComponentKeys?: string[]
 }
 
 export interface IComponentWithKey extends IComponent {

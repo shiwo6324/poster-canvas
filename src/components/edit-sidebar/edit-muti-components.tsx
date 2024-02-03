@@ -1,8 +1,18 @@
-import { useEditStore } from '@/src/store/editStore'
-import { NativeSelect } from '@mantine/core'
+import {
+  cancelGroupSelectedComponents,
+  groupSelectedComponents,
+  useEditStore,
+} from '@/src/store/editStore'
+import { Button, NativeSelect } from '@mantine/core'
 
-const EditMutiComponents = () => {
+const EditMutiComponents = ({ isGroup }: { isGroup: boolean }) => {
   const { editSelectedComponentsStyle } = useEditStore()
+  const handleGroupComponents = () => {
+    groupSelectedComponents()
+  }
+  const handleCancelGroupcomponents = () => {
+    cancelGroupSelectedComponents()
+  }
   return (
     <div className="px-3 py-3">
       <NativeSelect
@@ -49,6 +59,11 @@ const EditMutiComponents = () => {
           { label: '下对齐', value: 'bottom' },
         ]}
       />
+      {isGroup ? (
+        <Button onClick={handleCancelGroupcomponents}>取消组合</Button>
+      ) : (
+        <Button onClick={handleGroupComponents}>组合</Button>
+      )}
     </div>
   )
 }

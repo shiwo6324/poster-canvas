@@ -3,5 +3,6 @@ export enum CompType {
   IMAGE,
   GRAPH,
   TEMPLATE,
+  GROUP,
   EMPTY,
 }
