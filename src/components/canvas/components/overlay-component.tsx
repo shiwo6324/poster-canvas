@@ -5,6 +5,7 @@ import { Image } from '@mantine/core'
 import { pick } from 'lodash'
 import React from 'react'
 import { TfiText } from 'react-icons/tfi'
+import { FaCubesStacked } from 'react-icons/fa6'
 
 const OverlayComponent = ({
   component,
@@ -41,6 +42,10 @@ const OverlayComponent = ({
   if (component.type === CompType.TEXT) {
     left = <TfiText />
     right = component.value
+  }
+  if (component.type === CompType.GROUP) {
+    left = <FaCubesStacked />
+    right = '组合组件'
   }
   return (
     <li

@@ -1,4 +1,5 @@
 import { useEditStore } from '@/src/store/editStore'
+import { CompType } from '@/src/types/const'
 import { IComponentWithKey } from '@/src/types/editStoreTypes'
 import { throttle } from 'lodash'
 import React from 'react'
@@ -6,6 +7,7 @@ import { TbRotate360 } from 'react-icons/tb'
 
 const Rotate = ({ zoom, component }: { zoom: number; component: IComponentWithKey }) => {
   const { recordCanvasPostionHistory, updateSelectedComponentRotateStyle } = useEditStore()
+  if (component.type === CompType.GROUP) return
   const rotate = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
     const angle = ((component.style.transform + 90) * Math.PI) / 180
