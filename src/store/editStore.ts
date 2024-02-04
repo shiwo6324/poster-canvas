@@ -470,26 +470,38 @@ export const useEditStore = create<EditStoreState>()(
         set((state) => {
           const selectedComponents = state.selectedComponents
           const newComponents: IComponentWithKey[] = []
+          const map = getComponentsMap(state.canvas.content.components)
+
           // 获取当前画布组件的长度, 用于获取新复制组件的下标
-          let componentsLength = state.canvas.content.components.length - 1
+          let componentsLength = state.canvas.content.components.length
           // 存储新的选中组件索引集合
           const newSelectedComponents: Set<number> = new Set()
           selectedComponents.forEach((index) => {
-            const componentToCopy = cloneDeep(state.canvas.content.components[index])
-            if (componentToCopy.style) {
-              componentToCopy.style.top += 40
-              componentToCopy.style.left += 40
+            const component = state.canvas.content.components[index]
+            const componentToCopy = setCopiedComponentPosition(component)
+            // 组合组件
+            if (componentToCopy.type === CompType.GROUP) {
+              componentToCopy.groupComponentKeys = []
+              component.groupComponentKeys?.forEach((key) => {
+                const childIndex = map.get(key)
+                const childComponent = setCopiedComponentPosition(
+                  state.canvas.content.components[childIndex],
+                )
+                childComponent.groupKey = componentToCopy.key
+                componentToCopy.groupComponentKeys?.push(childComponent.key)
+                newComponents.push(childComponent)
+                componentsLength++
+              })
             }
-            componentToCopy.key = crypto.randomUUID()
+
             newComponents.push(componentToCopy)
-            componentsLength++
             // 将新组件的索引添加到新的选中组件集合中
-            newSelectedComponents.add(componentsLength)
-            state.hasSaved = false
+            newSelectedComponents.add(componentsLength++)
           })
           state.canvas.content.components = state.canvas.content.components.concat(newComponents)
           // 更新选中组件索引集合为新的选中组件集合
           state.selectedComponents = newSelectedComponents
+          state.hasSaved = false
         }),
       // 组件置顶
       // 置顶，把组件放到数组最后
@@ -864,6 +876,14 @@ function getComponentsMap(components: IComponentWithKey[]) {
     map.set(component.key, index)
   })
   return map
+}
+
+function setCopiedComponentPosition(_componentToCopy: IComponentWithKey) {
+  const componentToCopy = cloneDeep(_componentToCopy)
+  componentToCopy.key = crypto.randomUUID()
+  componentToCopy.style.top += 40
+  componentToCopy.style.left += 40
+  return componentToCopy
 }
 
 // 初始化画布
