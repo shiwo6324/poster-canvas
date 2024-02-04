@@ -3,7 +3,7 @@ import { IComponentWithKey } from 'src/types/editStoreTypes'
 import { omit, pick } from 'lodash'
 import classNames from 'classnames'
 import { CompType } from 'src/types/const'
-import { useEditStore } from 'src/store/editStore'
+import { getComponentGroupIndex, useEditStore } from 'src/store/editStore'
 import React from 'react'
 
 interface CanvasComponentProps {
@@ -20,10 +20,14 @@ const CanvasItem = React.memo(({ component, isSelected, index }: CanvasComponent
 
   // TODO: 优化重新渲染
   const handleSelectComponent = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log('触发handleSelectComponent')
+
     if (e.ctrlKey) {
       setSelectedComponents([index])
     } else {
-      setSelectedComponent(index)
+      // 如果这个组件属于组合组件，那么默认选中组合组件
+      const groupIndex = getComponentGroupIndex(index)
+      setSelectedComponent(groupIndex !== undefined ? groupIndex : index)
     }
   }
   const transform = `rotate(${component.style.transform}deg)`

@@ -2,6 +2,7 @@ import { useEditStore } from '@/src/store/editStore'
 import { IComponentWithKey } from '@/src/types/editStoreTypes'
 import React from 'react'
 import OverlayComponent from './overlay-component'
+import { CompType } from '@/src/types/const'
 
 interface EditMenuProps {
   style: React.CSSProperties
@@ -26,8 +27,8 @@ const EditMenu = ({ style, selectedComponentsSize }: EditMenuProps) => {
   const components = canvas.content.components
   const selectedComponentIndex = [...selectedComponents][0]
   // 检查当前组件与选中的单个组件是否有重叠
+  const selectedComponent = components[selectedComponentIndex]
   const isOverLay = (component: IComponentWithKey) => {
-    const selectedComponent = components[selectedComponentIndex]
     const selectedComponentStyle = {
       top: selectedComponent.style?.top,
       bottom: selectedComponent.style?.height + selectedComponent.style?.top,
@@ -73,12 +74,16 @@ const EditMenu = ({ style, selectedComponentsSize }: EditMenuProps) => {
         >
           删除组件
         </li>
-        <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={addIndex}>
-          上移一层
-        </li>
-        <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={minusIndex}>
-          下移一层
-        </li>
+        {selectedComponent.type !== CompType.GROUP && (
+          <>
+            <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={addIndex}>
+              上移一层
+            </li>
+            <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={minusIndex}>
+              下移一层
+            </li>
+          </>
+        )}
         <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={bringToFront}>
           置顶
         </li>

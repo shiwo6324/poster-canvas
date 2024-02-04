@@ -492,32 +492,95 @@ export const useEditStore = create<EditStoreState>()(
           state.selectedComponents = newSelectedComponents
         }),
       // 组件置顶
+      // 置顶，把组件放到数组最后
+      // 如果是组合组件 N，包含 n 个子组件，则组件顺序如下：
+      // 0...m，n0，nl，n2...，N 则把组合组件放到最后，
+      // m+n+1=len
       bringToFront: () =>
         set((state) => {
           const selectedComponentIndex = [...state.selectedComponents][0]
-          if (selectedComponentIndex === state.canvas.content.components.length - 1) {
-            return
+          const selectedComponent = state.canvas.content.components[selectedComponentIndex]
+
+          const length = state.canvas.content.components.length
+          if (selectedComponent.type === CompType.GROUP) {
+            // 组合组件
+            const set = new Set(selectedComponent.groupComponentKeys)
+            // m 是其他组件，n 是子组件
+            let m = 0
+            // 组合组件的子组件的起始索引
+            let n = length - set.size - 1
+            // 复制组件数组，以便在循环中修改数组
+            const components = [...state.canvas.content.components]
+            for (let index = 0; index < length; index++) {
+              const component = components[index]
+              if (component.key === selectedComponent.key) {
+                // 如果是父组件，将其移到数组的最后
+
+                state.canvas.content.components[length - 1] = component
+              } else if (set.has(component.key)) {
+                // 如果是子组件，将其移到数组的子组件区域
+
+                state.canvas.content.components[n++] = component
+              } else {
+                // 如果是其他组件，将其移到数组的非子组件区域
+
+                state.canvas.content.components[m++] = component
+              }
+            }
+          } else {
+            if (selectedComponentIndex === state.canvas.content.components.length - 1) {
+              // 如果选中的组件不是组合组件，且已经在数组的最后，则不进行任何操作
+              return
+            }
+            state.canvas.content.components = state.canvas.content.components
+              .slice(0, selectedComponentIndex)
+              .concat(state.canvas.content.components.slice(selectedComponentIndex + 1))
+              .concat(state.canvas.content.components[selectedComponentIndex])
           }
-          state.canvas.content.components = state.canvas.content.components
-            .slice(0, selectedComponentIndex)
-            .concat(state.canvas.content.components.slice(selectedComponentIndex + 1))
-            .concat(state.canvas.content.components[selectedComponentIndex])
+
           state.selectedComponents = new Set([state.canvas.content.components.length - 1])
-          state.recordCanvasHistory(state)
           state.hasSaved = false
+          state.recordCanvasHistory(state)
         }),
       // 组件置底
       bringToBack: () =>
         set((state) => {
           const selectedComponentIndex = [...state.selectedComponents][0]
-          if (selectedComponentIndex === 0) {
-            return
+          const selectedComponent = state.canvas.content.components[selectedComponentIndex]
+
+          if (selectedComponent.type === CompType.GROUP) {
+            const set = new Set(selectedComponent.groupComponentKeys)
+            let m = 1
+            let n = set.size + 1
+            // 复制组件数组，以便在循环中修改数组
+            const length = state.canvas.content.components.length
+
+            const components = [...state.canvas.content.components]
+            for (let index = 0; index < length; index++) {
+              const component = components[index]
+              if (component.key === selectedComponent.key) {
+                // 如果是父组件，将其移到数组的前面
+
+                state.canvas.content.components[0] = component
+              } else if (set.has(component.key)) {
+                // 如果是子组件，将其移到数组的子组件区域
+                state.canvas.content.components[m++] = component
+              } else {
+                // 如果是其他组件，将其移到数组的非子组件区域
+
+                state.canvas.content.components[n++] = component
+              }
+            }
+          } else {
+            if (selectedComponentIndex === 0) {
+              return
+            }
+            state.canvas.content.components = [
+              state.canvas.content.components[selectedComponentIndex],
+            ]
+              .concat(state.canvas.content.components.slice(0, selectedComponentIndex))
+              .concat(state.canvas.content.components.slice(selectedComponentIndex + 1))
           }
-          state.canvas.content.components = [
-            state.canvas.content.components[selectedComponentIndex],
-          ]
-            .concat(state.canvas.content.components.slice(0, selectedComponentIndex))
-            .concat(state.canvas.content.components.slice(selectedComponentIndex + 1))
 
           state.selectedComponents = new Set([0])
           state.recordCanvasHistory(state)
@@ -759,6 +822,14 @@ export const groupSelectedComponents = () => {
     state.selectedComponents = new Set([components.length - 1])
     state.recordCanvasHistory(state)
   })
+}
+// 根据组合组件的子组件 index，返回父组件的 index
+export const getComponentGroupIndex = (childIndex: number) => {
+  const store = useEditStore.getState()
+  const components = store.canvas.content.components
+  const map = getComponentsMap(components)
+  const groupIndex = map.get(components[childIndex].groupKey)
+  return groupIndex
 }
 export const cancelGroupSelectedComponents = () => {
   useEditStore.setState((state) => {

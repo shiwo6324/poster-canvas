@@ -18,6 +18,8 @@ const OverlayComponent = ({
 }) => {
   const { setSelectedComponent } = useEditStore()
   const handleSetSelectedComponent = () => {
+    console.log('触发 handleSetSelectedComponent')
+
     setSelectedComponent(index)
   }
   let left
