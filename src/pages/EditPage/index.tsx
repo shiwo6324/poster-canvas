@@ -1,6 +1,6 @@
 import { AppShell, Box, Flex } from '@mantine/core'
 import Canvas from '@/src/components'
-import Sidebar from 'src/components/sidebar'
+import Sidebar from '@/src/components/left-sidebar'
 import SidebarList from 'src/components/sidebar-list'
 
 import CanvasHeader from 'src/components/canvas-header'

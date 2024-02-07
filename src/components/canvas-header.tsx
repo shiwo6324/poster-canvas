@@ -1,10 +1,12 @@
-import { AppShell } from '@mantine/core'
+import { AppShell, Tooltip } from '@mantine/core'
 import { BsFileEarmarkText } from 'react-icons/bs'
 import { GiBroom } from 'react-icons/gi'
 import { MdOutlinePreview } from 'react-icons/md'
 import { TbArrowBack, TbArrowForward } from 'react-icons/tb'
 import { unstable_usePrompt, useNavigate } from 'react-router-dom'
 import { useCanvasId, useCanvasType } from 'src/hooks/useCanvasIdAndType'
+import { FaTrashCan } from 'react-icons/fa6'
+
 import { saveCanvas } from 'src/request/canvas'
 import { useEditStore } from 'src/store/editStore'
 import { toast } from 'sonner'
@@ -71,37 +73,56 @@ const CanvasHeader = () => {
     resetZoom()
   }
   return (
-    <AppShell.Header px={20}>
-      <ul className="flex h-full items-center justify-between gap-3">
-        <li className="cursor-pointer hover:text-sky-500" onClick={() => navigate('/list')}>
+    <AppShell.Header px={20} className="bg-primary-black">
+      <ul className="text-primary-grey-300 flex h-full  w-full items-center  justify-center gap-3">
+        {/* <li className=" cursor-pointer" onClick={() => navigate('/list')}>
           查看列表
-        </li>
-        <li className="group flex cursor-pointer items-center gap-1">
-          <BsFileEarmarkText size={20} className="group-hover:text-sky-500" />
-          <p className="group-hover:text-sky-500" onClick={handleSaveCanvas}>
-            保存
-          </p>
-        </li>
-        <li className="group flex cursor-pointer items-center gap-1">
-          <MdOutlinePreview size={20} className="group-hover:text-sky-500" />
-          <p className="group-hover:text-sky-500" onClick={handleSaveAndPreview}>
-            保存并预览
-          </p>
-        </li>
-        <li className="group flex cursor-pointer items-center gap-1" onClick={getPrevCanvasHistory}>
-          <TbArrowBack size={20} className="group-hover:text-sky-500" />
-          <p className="group-hover:text-sky-500">上一步</p>
-        </li>
-        <li className="group flex cursor-pointer items-center gap-1" onClick={getNextCanvasHistory}>
-          <TbArrowForward size={20} className="group-hover:text-sky-500" />
-          <p className="group-hover:text-sky-500">下一步</p>
-        </li>
-        <li className="group flex cursor-pointer items-center gap-1">
-          <GiBroom size={20} className="group-hover:text-red-500" />
-          <p className="group-hover:text-red-500" onClick={handleClearCanvas}>
+        </li> */}
+        <Tooltip label="保存">
+          <li
+            onClick={handleSaveCanvas}
+            className="hover:bg-primary-grey-200 group flex  h-full cursor-pointer items-center gap-1 px-2.5 py-5 hover:cursor-pointer "
+          >
+            <BsFileEarmarkText size={25} className=" " />
+          </li>
+        </Tooltip>
+        <Tooltip label="保存并预览">
+          <li
+            onClick={handleSaveAndPreview}
+            className="hover:bg-primary-grey-200 group flex  h-full cursor-pointer items-center gap-1 px-2.5 py-5 hover:cursor-pointer "
+          >
+            <MdOutlinePreview size={25} />
+            {/* <p onClick={handleSaveAndPreview}>保存并预览</p> */}
+          </li>
+        </Tooltip>
+        <Tooltip label="上一步">
+          <li
+            onClick={getPrevCanvasHistory}
+            className="hover:bg-primary-grey-200 group flex  h-full cursor-pointer items-center gap-1 px-2.5 py-5 hover:cursor-pointer "
+          >
+            <TbArrowBack size={25} />
+            {/* <p>上一步</p> */}
+          </li>
+        </Tooltip>
+        <Tooltip label="下一步">
+          <li
+            onClick={getNextCanvasHistory}
+            className="hover:bg-primary-grey-200 group flex  h-full cursor-pointer items-center gap-1 px-2.5 py-5 hover:cursor-pointer "
+          >
+            <TbArrowForward size={25} />
+          </li>
+        </Tooltip>
+        <Tooltip label="清空画布">
+          <li
+            onClick={handleClearCanvas}
+            className="hover:bg-primary-grey-200 group flex  h-full cursor-pointer items-center gap-1 px-2.5 py-5 hover:cursor-pointer "
+          >
+            <FaTrashCan size={20} />
+            {/* <p className="group-hover:text-red-500" onClick={handleClearCanvas}>
             清空
-          </p>
-        </li>
+          </p> */}
+          </li>
+        </Tooltip>
       </ul>
     </AppShell.Header>
   )

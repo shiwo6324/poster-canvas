@@ -1,10 +1,14 @@
 import { fetchTemplates, getCanvasList } from '@/src/request/canvas'
 import { addComponent, useEditStore } from '@/src/store/editStore'
+import { useSidebarTypeStore } from '@/src/store/sidebarStore'
+import { CompType } from '@/src/types/const'
 import { Box, Grid, Image } from '@mantine/core'
 import React from 'react'
 
 const TemplateSidebar = () => {
   const { addTemplateToCanvas } = useEditStore()
+  const { type } = useSidebarTypeStore((state) => state)
+
   const [list, setList] = React.useState([])
   const fresh = () => {
     fetchTemplates((res: any) => {
@@ -14,6 +18,7 @@ const TemplateSidebar = () => {
   React.useEffect(() => {
     fresh()
   }, [])
+  if (type !== CompType.TEMPLATE) return null
 
   return (
     <Grid columns={8} p={10} className="relative z-50 h-full overflow-y-scroll shadow-xl">

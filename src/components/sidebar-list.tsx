@@ -1,7 +1,7 @@
-import ImageSidebar from './sidebar/image-sidebar'
-import TextSidebar from './sidebar/text-sidebar'
-import GraphSidebar from './sidebar/graph-sidebar'
-import TemplateSidebar from './sidebar/template-sidebar'
+import ImageSidebar from './left-sidebar/image-sidebar'
+import TextSidebar from './left-sidebar/text-sidebar'
+import GraphSidebar from './left-sidebar/graph-sidebar'
+import TemplateSidebar from './left-sidebar/template-sidebar'
 
 const SidebarList = () => {
   return (
