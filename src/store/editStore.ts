@@ -893,7 +893,7 @@ function getDefaultCanvasContent(): IContent {
     style: {
       width: 320,
       height: 568,
-      backgroundColor: '#ffffff',
+      backgroundColor: '#202731',
       backgroundImage: '',
       backgroundPosition: 'center',
       backgroundSize: 'cover',

@@ -1,9 +1,10 @@
-import { Box, Grid } from '@mantine/core'
+import { Menu } from '@mantine/core'
 import { defaultComponentStyle } from 'src/utils/const'
 import { useSidebarTypeStore } from 'src/store/sidebarStore'
 import { addComponent } from 'src/store/editStore'
 import React from 'react'
-import { CompType } from 'src/types/const'
+import { LuHeading1 } from 'react-icons/lu'
+import { PiParagraphDuotone } from 'react-icons/pi'
 
 const defaultStyle: React.CSSProperties = {
   ...defaultComponentStyle,
@@ -13,7 +14,7 @@ const defaultStyle: React.CSSProperties = {
   fontSize: 12,
   fontWeight: 'normal',
   textDecoration: 'none',
-  color: '#000',
+  color: '#AABBCC',
   backgroundColor: '#ffffff00',
   textAlign: 'left',
   wordSpacing: '10px',
@@ -38,31 +39,50 @@ const settings = [
 const TextSidebar = () => {
   const { type } = useSidebarTypeStore((state) => state)
 
-  if (type !== CompType.TEXT) return null
   return (
-    <Grid columns={8} p={10} className="z-50 h-full w-full shadow-xl  ">
+    <>
       {settings.map((item) => (
-        <Grid.Col
-          span={4}
+        <Menu.Item
+          className=" px-14 py-4 text-white hover:bg-primary-grey-200"
+          color="none"
           key={item.value}
           onClick={() => addComponent({ ...item, type })}
           onDragStart={(e) => {
             e.dataTransfer.setData('drag-component', JSON.stringify({ ...item, type }))
           }}
+          draggable={true}
         >
-          <Box
-            draggable={true}
-            w={125}
-            h={100}
-            className="flex cursor-pointer 
-                   items-center justify-center border border-solid
-                    border-slate-300 hover:border-amber-300 hover:text-amber-300"
-          >
+          <div className="flex items-center gap-3">
+            <LuHeading1 size={25} />
             {item.value.indexOf('双击编辑') > -1 ? item.value.slice(4) : item.value}
-          </Box>
-        </Grid.Col>
+          </div>
+        </Menu.Item>
       ))}
-    </Grid>
+    </>
+
+    // <Grid columns={8} p={10} className="z-50 h-full w-full   ">
+    //   {settings.map((item) => (
+    //     <Grid.Col
+    //       span={4}
+    //       key={item.value}
+    //       onClick={() => addComponent({ ...item, type })}
+    //       onDragStart={(e) => {
+    //         e.dataTransfer.setData('drag-component', JSON.stringify({ ...item, type }))
+    //       }}
+    //     >
+    //       <Box
+    //         draggable={true}
+    //         w={125}
+    //         h={100}
+    //         className="flex cursor-pointer
+    //                items-center justify-center border border-solid
+    //                 border-slate-300 hover:border-amber-300 hover:text-amber-300"
+    //       >
+    //         {item.value.indexOf('双击编辑') > -1 ? item.value.slice(4) : item.value}
+    //       </Box>
+    //     </Grid.Col>
+    //   ))}
+    // </Grid>
   )
 }
 

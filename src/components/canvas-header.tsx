@@ -74,14 +74,14 @@ const CanvasHeader = () => {
   }
   return (
     <AppShell.Header px={20} className="bg-primary-black">
-      <ul className="text-primary-grey-300 flex h-full  w-full items-center  justify-center gap-3">
+      <ul className="flex h-full w-full  items-center justify-center  gap-3 text-primary-grey-300">
         {/* <li className=" cursor-pointer" onClick={() => navigate('/list')}>
           查看列表
         </li> */}
         <Tooltip label="保存">
           <li
             onClick={handleSaveCanvas}
-            className="hover:bg-primary-grey-200 group flex  h-full cursor-pointer items-center gap-1 px-2.5 py-5 hover:cursor-pointer "
+            className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
           >
             <BsFileEarmarkText size={25} className=" " />
           </li>
@@ -89,7 +89,7 @@ const CanvasHeader = () => {
         <Tooltip label="保存并预览">
           <li
             onClick={handleSaveAndPreview}
-            className="hover:bg-primary-grey-200 group flex  h-full cursor-pointer items-center gap-1 px-2.5 py-5 hover:cursor-pointer "
+            className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
           >
             <MdOutlinePreview size={25} />
             {/* <p onClick={handleSaveAndPreview}>保存并预览</p> */}
@@ -98,7 +98,7 @@ const CanvasHeader = () => {
         <Tooltip label="上一步">
           <li
             onClick={getPrevCanvasHistory}
-            className="hover:bg-primary-grey-200 group flex  h-full cursor-pointer items-center gap-1 px-2.5 py-5 hover:cursor-pointer "
+            className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
           >
             <TbArrowBack size={25} />
             {/* <p>上一步</p> */}
@@ -107,7 +107,7 @@ const CanvasHeader = () => {
         <Tooltip label="下一步">
           <li
             onClick={getNextCanvasHistory}
-            className="hover:bg-primary-grey-200 group flex  h-full cursor-pointer items-center gap-1 px-2.5 py-5 hover:cursor-pointer "
+            className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
           >
             <TbArrowForward size={25} />
           </li>
@@ -115,7 +115,7 @@ const CanvasHeader = () => {
         <Tooltip label="清空画布">
           <li
             onClick={handleClearCanvas}
-            className="hover:bg-primary-grey-200 group flex  h-full cursor-pointer items-center gap-1 px-2.5 py-5 hover:cursor-pointer "
+            className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
           >
             <FaTrashCan size={20} />
             {/* <p className="group-hover:text-red-500" onClick={handleClearCanvas}>

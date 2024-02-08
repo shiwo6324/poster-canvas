@@ -20,7 +20,7 @@ const EditPage = () => {
     <div>
       <Sidebar />
       <Flex className="">
-        <Box
+        {/* <Box
           id="sidebar"
           w={280}
           style={{
@@ -29,7 +29,7 @@ const EditPage = () => {
           className="fixed "
         >
           <SidebarList />
-        </Box>
+        </Box> */}
         <div
           id="container"
           className="flex w-full justify-center py-9 "

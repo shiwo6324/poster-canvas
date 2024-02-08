@@ -20,10 +20,7 @@ const EditSidebar = () => {
     isGroup = selectedComponent.type === CompType.GROUP
   }
   return (
-    <div className="w-full">
-      <div className="flex w-full items-center justify-center bg-gray-400 p-2 font-semibold">
-        画布属性
-      </div>
+    <section className="sticky right-0 flex h-full min-w-[227px] select-none flex-col border-t border-primary-grey-200 bg-primary-black text-primary-grey-300 max-sm:hidden">
       {selectedComponents.size === 0 ? (
         <EditCanvas canvas={canvas} />
       ) : selectedComponents.size === 1 && !isGroup ? (
@@ -31,7 +28,7 @@ const EditSidebar = () => {
       ) : (
         <EditMutiComponents isGroup={isGroup} />
       )}
-    </div>
+    </section>
   )
 }
 
