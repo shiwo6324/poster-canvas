@@ -1,7 +1,7 @@
 import { TextInput } from '@mantine/core'
 
 interface TextInputProps {
-  onChange: (value: string) => void
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   id: string
   defaultValue: string
 }
@@ -20,9 +20,7 @@ const CTextInput = ({ id, defaultValue, onChange }: TextInputProps) => {
           input: 'text-primary-grey-300 input-ring px-4',
         }}
         variant="unstyled"
-        onChange={(e) => {
-          onChange(e.target.value)
-        }}
+        onChange={onChange}
         defaultValue={defaultValue}
       />
     </div>

@@ -20,16 +20,6 @@ const EditPage = () => {
     <div>
       <Sidebar />
       <Flex className="">
-        {/* <Box
-          id="sidebar"
-          w={280}
-          style={{
-            height: 'calc(100vh - 70px)',
-          }}
-          className="fixed "
-        >
-          <SidebarList />
-        </Box> */}
         <div
           id="container"
           className="flex w-full justify-center py-9 "
@@ -46,7 +36,7 @@ const EditPage = () => {
         >
           <Canvas />
         </div>
-        <AppShell.Aside>
+        <AppShell.Aside className="bg-primary-black">
           <EditSidebar />
         </AppShell.Aside>
       </Flex>

@@ -20,7 +20,7 @@ const EditSidebar = () => {
     isGroup = selectedComponent.type === CompType.GROUP
   }
   return (
-    <section className="sticky right-0 flex h-full min-w-[227px] select-none flex-col border-t border-primary-grey-200 bg-primary-black text-primary-grey-300 max-sm:hidden">
+    <section className="sticky right-0 flex  min-w-[227px] select-none flex-col   border-t border-primary-grey-200 bg-primary-black text-primary-grey-300 max-sm:hidden">
       {selectedComponents.size === 0 ? (
         <EditCanvas canvas={canvas} />
       ) : selectedComponents.size === 1 && !isGroup ? (

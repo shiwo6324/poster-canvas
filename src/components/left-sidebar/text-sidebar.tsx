@@ -18,6 +18,8 @@ const defaultStyle: React.CSSProperties = {
   backgroundColor: '#ffffff00',
   textAlign: 'left',
   wordSpacing: '10px',
+  borderWidth: 0,
+  borderStyle: 'none',
 }
 
 const settings = [

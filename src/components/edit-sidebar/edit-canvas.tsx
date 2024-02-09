@@ -19,7 +19,7 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
         根据您的喜好对画布进行更改
       </span>
       {/* 画布宽高 */}
-      <section className="flex flex-col border-b border-primary-grey-200">
+      <section className="flex h-full   flex-col border-b border-primary-grey-200">
         <div className="flex flex-col gap-4 px-6 py-3">
           <CNumberInput
             defaultValue={width as string}
@@ -43,7 +43,7 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
             </label>
             <TextInput
               id="canvasTitle"
-              className="no-ring w-full rounded-sm border border-primary-grey-200"
+              className="no-ring w-full rounded-sm"
               description="  "
               onChange={(e) => {
                 updateCanvasTitle(e.target.value)
@@ -74,6 +74,7 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
               className="no-ring w-full rounded-sm border border-primary-grey-200"
               classNames={{
                 input: 'text-primary-grey-300 input-ring px-12',
+                dropdown: 'bg-primary-black  text-primary-grey-300 border-primary-grey-200',
               }}
               swatches={[
                 ...DEFAULT_THEME.colors.red,
@@ -99,6 +100,23 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
             accept="image/png,image/jpeg"
             placeholder="点击上传图片"
           />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3  border-primary-grey-200 px-5 py-3">
+        <div className="flex flex-col gap-3">
+          <label htmlFor="canvasBgImage" className="text-[10px] font-bold">
+            导出
+          </label>
+          {/* <FileInput
+            id="canvasBgImage"
+            className="no-ring w-full rounded-sm border border-primary-grey-200"
+            classNames={{
+              input: 'text-primary-grey-300 input-ring px-12',
+            }}
+            accept="image/png,image/jpeg"
+            placeholder="点击上传图片"
+          /> */}
         </div>
       </div>
     </>

@@ -171,6 +171,24 @@ export const pageAlignOptions = [
   { label: '下对齐', value: 'bottom' },
 ]
 
+export const boarderStyleOptions = [
+  { label: '无', value: 'none' },
+  { label: '虚线', value: 'dashed' },
+  { label: '点状', value: 'dotted' },
+  { label: '双线', value: 'double' },
+  { label: '凹槽', value: 'groove' },
+  { label: '隐藏', value: 'hidden' },
+  { label: '实线', value: 'solid' },
+]
+
+export const animationNameOptions = [
+  { label: '无动画', value: '' },
+  { label: '闪烁', value: 'flash' },
+  { label: '果冻', value: 'jelly' },
+  { label: '抖动', value: 'shake' },
+  { label: '左右摇摆', value: 'swing' },
+]
+
 export const alignmentOptions = [
   { value: 'left', label: 'Align Left', icon: '/assets/align-left.svg' },
   {
