@@ -23,7 +23,8 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
   const { zoom } = useZoomStore()
   const size = selectedComponents.size
   if (size === 0) return
-  const selectedComponent = canvas.content.components[[...selectedComponents][0]]
+  const selectedComponent =
+    canvas.content.components[[...selectedComponents][0]]
   // 初始化边界值,极值
   let top = 9999
   let left = 9999
@@ -36,8 +37,14 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
     top = Math.min(top, component.style.top as number)
     left = Math.min(left, component.style.left as number)
     // 需要 top/left 加上 height/width 的原因是，计算哪个组件在最下边/右边
-    bottom = Math.max(bottom, (component.style.top as number) + (component.style.height as number))
-    right = Math.max(right, (component.style.left as number) + (component.style.width as number))
+    bottom = Math.max(
+      bottom,
+      (component.style.top as number) + (component.style.height as number),
+    )
+    right = Math.max(
+      right,
+      (component.style.left as number) + (component.style.width as number),
+    )
   })
 
   // 需要加上红色的边框值和内层的的蓝色的边框
@@ -48,7 +55,9 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
   left -= 4
 
   // 在画布上移动组件位置
-  const handleMoveSelectedComponents = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMoveSelectedComponents = (
+    e: React.MouseEvent<HTMLDivElement>,
+  ) => {
     if (textAreaFocused) {
       return
     }
@@ -81,6 +90,7 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
     }, 10)
     const up = () => {
       document.querySelectorAll('.alignLine').forEach((element) => {
+        // eslint-disable-next-line no-extra-semi
         ;(element as HTMLDivElement).style.display = 'none'
       })
       document.removeEventListener('mousemove', move)
@@ -90,7 +100,9 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
     document.addEventListener('mousemove', move)
     document.addEventListener('mouseup', up)
   }
-  const transform = `rotate(${size === 1 ? selectedComponent.style.transform : 0}deg)`
+  const transform = `rotate(${
+    size === 1 ? selectedComponent.style.transform : 0
+  }deg)`
   return (
     <>
       {size === 1 && <AlignLines canvasStyle={canvasStyle} />}
@@ -111,44 +123,46 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
         // onMouseLeave={() => setTextAreaFocused(false)}
         onContextMenu={() => setShowContextMenu(true)}
       >
-        {size === 1 && selectedComponent.type === CompType.TEXT && textAreaFocused && (
-          <textarea
-            ref={textareaRef}
-            defaultValue={selectedComponent.value}
-            onChange={() => {
-              // const newValue = e.target.value
-              // 如果改变文本高度，则调整组件框高度
-              const textHeight = textareaRef?.current?.scrollHeight
-              // updateSelectedComponentAttr('value', newValue)
-              updateSelectedComponentStyle({ height: textHeight })
-            }}
-            onBlur={(e) => {
-              const newValue = e.target.value
-              setTextAreaFocused(false)
-              updateSelectedComponentAttr('value', newValue)
-            }}
-            style={{
-              ...selectedComponent.style,
-              width: width - 8,
-              // height,
-              top: 0,
-              left: 0,
-            }}
-          />
+        {size === 1 &&
+          selectedComponent.type === CompType.TEXT &&
+          textAreaFocused && (
+            <textarea
+              ref={textareaRef}
+              defaultValue={selectedComponent.value}
+              onChange={() => {
+                // const newValue = e.target.value
+                // 如果改变文本高度，则调整组件框高度
+                const textHeight = textareaRef?.current?.scrollHeight
+                // updateSelectedComponentAttr('value', newValue)
+                updateSelectedComponentStyle({ height: textHeight })
+              }}
+              onBlur={(e) => {
+                const newValue = e.target.value
+                setTextAreaFocused(false)
+                updateSelectedComponentAttr('value', newValue)
+              }}
+              style={{
+                ...selectedComponent.style,
+                width: width - 8,
+                // height,
+                top: 0,
+                left: 0,
+              }}
+            />
 
-          // <TextareaAutosize
-          //   value={selectedComponent.value}
-          //   style={{ ...selectedComponent.style, top: 1, left: 0.2 }}
-          //   onChange={(e) => {
-          //     updateSelectedComponentAttr('value', e.target.value)
-          //   }}
-          //   onHeightChange={(height) => {
-          //     updateSelectedComponentStyle({
-          //       height,
-          //     })
-          //   }}
-          // />
-        )}
+            // <TextareaAutosize
+            //   value={selectedComponent.value}
+            //   style={{ ...selectedComponent.style, top: 1, left: 0.2 }}
+            //   onChange={(e) => {
+            //     updateSelectedComponentAttr('value', e.target.value)
+            //   }}
+            //   onHeightChange={(height) => {
+            //     updateSelectedComponentStyle({
+            //       height,
+            //     })
+            //   }}
+            // />
+          )}
         {showContextMenu && (
           <EditMenu
             components={canvas.content.components}

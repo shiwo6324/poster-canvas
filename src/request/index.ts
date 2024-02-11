@@ -1,7 +1,7 @@
 import axios from 'axios'
 import docCookies from '../utils/cookies'
 import { toast } from 'sonner'
-export const end = '' // url:"//template.josephxia.com";
+export const end = ''
 
 // 公共方法，处理响应，进行判断并调用相应的回调
 export function common(
@@ -14,7 +14,9 @@ export function common(
     if (code === 200) {
       successCallback && successCallback(res.data.result)
     } else if (code === 401) {
-      typeof failedCallback === 'function' ? failedCallback() : alert('请先登录！')
+      typeof failedCallback === 'function'
+        ? failedCallback()
+        : alert('请先登录！')
     } else {
       typeof failedCallback === 'function'
         ? failedCallback()

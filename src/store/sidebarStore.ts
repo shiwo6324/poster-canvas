@@ -1,5 +1,6 @@
 import { CompType } from 'src/types/const'
 import { create } from 'zustand'
+import { immer } from 'zustand/middleware/immer'
 
 type SidebarType =
   | CompType.IMAGE
@@ -8,12 +9,14 @@ type SidebarType =
   | CompType.TEMPLATE
   | CompType.EMPTY
 
-interface sidebarTypeState {
+interface SidebarTypeState {
   type: SidebarType
   setType: (type: CompType) => void
 }
 
-export const useSidebarTypeStore = create<sidebarTypeState>()((set) => ({
-  type: CompType.EMPTY,
-  setType: (type) => set(() => ({ type })),
-}))
+export const useSidebarTypeStore = create<SidebarTypeState>()(
+  immer((set) => ({
+    type: CompType.EMPTY,
+    setType: (type) => set(() => ({ type })),
+  })),
+)

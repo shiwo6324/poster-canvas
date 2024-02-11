@@ -6,7 +6,7 @@ import { Box, Button, Table } from '@mantine/core'
 import docCookies from 'src/utils/cookies'
 
 export interface ListItem {
-  id: number
+  id: string
   type: string // 页面、模板页面
   title: string
   content: string
@@ -22,7 +22,7 @@ const ListPage = () => {
     window.location.href = '/'
   }
 
-  const [list, setList] = React.useState([])
+  const [list, setList] = React.useState<ListItem[]>([])
   const fresh = () => {
     getCanvasList('', (res: any) => {
       const data = res.content || []
@@ -35,8 +35,8 @@ const ListPage = () => {
     fresh()
   }, [])
 
-  const del = (values: { id: number }) => {
-    deleteCanvas(values, () => {
+  const del = (id: string) => {
+    deleteCanvas(id, () => {
       alert('删除成功')
       fresh()
     })
@@ -66,7 +66,10 @@ const ListPage = () => {
               }}
               display={'flex '}
             >
-              <a target="_blank" href={'https://builder-lemon.vercel.app/?id=' + element.id}>
+              <a
+                target="_blank"
+                href={'https://builder-lemon.vercel.app/?id=' + element.id}
+              >
                 线上查看（切移动端）
               </a>
               <Box
@@ -79,7 +82,11 @@ const ListPage = () => {
                 <Button size="xs" onClick={() => handleEditPage(element)}>
                   编辑
                 </Button>
-                <Button color="green" size="xs" onClick={() => handleSaveTemplage(element)}>
+                <Button
+                  color="green"
+                  size="xs"
+                  onClick={() => handleSaveTemplage(element)}
+                >
                   保存为模板
                 </Button>
                 <Button color="red" size="xs" onClick={() => del(element.id)}>

@@ -8,5 +8,5 @@ export const defaultComponentStyle: React.CSSProperties = {
   borderStyle: 'none',
   borderWidth: '0',
   borderColor: '#ffffff00',
-  transform: 0,
+  transform: 0 as any,
 }

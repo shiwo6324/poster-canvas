@@ -36,10 +36,10 @@ interface EditStoreState {
   setSelectedComponent: (index: number) => void
   selectAllComponents: () => void
   updateSelectedComponentsPosition: (position: {
-    top: number
-    left: number
-    width: number
-    height: number
+    top?: number
+    left?: number
+    width?: number
+    height?: number
   }) => void
   updateCanvasStyle: (style: CSSProperties) => void
   updateCanvasTitle: (title: string) => void
@@ -212,7 +212,9 @@ export const useEditStore = create<EditStoreState>()(
               // 拉伸组件，检查是否更新宽度或高度，并且更新后的值小于 2
               if (
                 (key === 'width' || key === 'height') &&
-                (component.style[key] as number) + position[key] < 2
+                typeof component.style[key] === 'number' && // 检查属性是否为数字类型
+                typeof position[key] === 'number' && // 检查属性是否为数字类型
+                (component.style[key] as number) + position[key]! < 2
               ) {
                 // 存在无效的更新
                 invalid = true

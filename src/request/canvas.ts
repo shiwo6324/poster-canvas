@@ -15,7 +15,12 @@ export function getCanvas(
 
 // 保存
 export function saveCanvas(
-  values: { id?: number | null; content: string; type?: string; title?: string },
+  values: {
+    id?: number | null
+    content: string
+    type?: string
+    title?: string
+  },
   successCallback: (id: number) => void,
   failedCallback?: () => void,
 ) {
@@ -33,9 +38,11 @@ export function getCanvasList(
   successCallback: (data: any) => void,
   failedCallback?: () => void,
 ) {
-  myAxios.get(end + '/api/web/content/list?pageSize=1000' + values).then((res) => {
-    common(res, successCallback, failedCallback)
-  })
+  myAxios
+    .get(end + '/api/web/content/list?pageSize=1000' + values)
+    .then((res) => {
+      common(res, successCallback, failedCallback)
+    })
 }
 
 // 查询模板列表
@@ -44,18 +51,20 @@ export function getTemplateList(
   successCallback: () => void,
   failedCallback?: () => void,
 ) {
-  myAxios.get(end + '/api/web/template/list?pageSize=1000' + values).then((res) => {
-    common(res, successCallback, failedCallback)
-  })
+  myAxios
+    .get(end + '/api/web/template/list?pageSize=1000' + values)
+    .then((res) => {
+      common(res, successCallback, failedCallback)
+    })
 }
 
 // 删除
 export function deleteCanvas(
-  values: { id: number },
+  id: string,
   successCallback: () => void,
   failedCallback?: () => void,
 ) {
-  myAxios.post(end + '/api/web/content/delete', { id: values }).then((res) => {
+  myAxios.post(end + '/api/web/content/delete', { id }).then((res) => {
     common(res, successCallback)
   })
 }
@@ -77,7 +86,10 @@ export function saveAsTemplate(
     })
 }
 
-export function fetchTemplates(successCallback: () => void, failedCallback?: () => void) {
+export function fetchTemplates(
+  successCallback: () => void,
+  failedCallback?: () => void,
+) {
   myAxios.get(end + '/api/web/template/list?pageSize=1000').then((res) => {
     common(res, successCallback)
   })
