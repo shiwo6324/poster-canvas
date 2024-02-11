@@ -14,8 +14,8 @@ const RequiredAuth = () => {
   return (
     <AppShell
       header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: 'sm' }}
-      aside={{ width: 300, breakpoint: 'md' }}
+      // navbar={{ width: 200, breakpoint: 'sm' }}
+      aside={{ width: 310, breakpoint: 'md' }}
     >
       <AppShell.Header>
         <Group h="100%" px="md">

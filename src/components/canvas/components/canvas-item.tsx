@@ -20,8 +20,6 @@ const CanvasItem = React.memo(({ component, isSelected, index }: CanvasComponent
 
   // TODO: 优化重新渲染
   const handleSelectComponent = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log('触发handleSelectComponent')
-
     if (e.ctrlKey) {
       setSelectedComponents([index])
     } else {
@@ -41,13 +39,12 @@ const CanvasItem = React.memo(({ component, isSelected, index }: CanvasComponent
       <div className="overflow-hidden " style={innerStyle}>
         {component.type === CompType.TEXT && (
           <div className="h-full w-full  whitespace-pre-wrap break-words">{component.value}</div>
-          // <div className="h-full w-full whitespace-pre-wrap  text-wrap">{component.value}</div>
         )}
 
         {component.type === CompType.IMAGE && (
           <Image src={component.value} className="h-full w-full" fit="fill" />
         )}
-        {/* {component.type === CompType.GRAPH && <div className="h-full w-full"></div>} */}
+        {/* {component.type === CompType.GRAPH && <div className="h-full w-full bg-red-400 rounded-full"></div>} */}
       </div>
     </div>
   )

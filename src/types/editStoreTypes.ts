@@ -2,9 +2,9 @@ import React from 'react'
 import { CompType } from './const'
 
 export type Style = React.CSSProperties
-
+export type contentType = 'content' | 'template'
 export interface ICanvas {
-  id: null | number
+  id: number | undefined
   type: 'content' | 'template'
   title: string
   content: IContent
