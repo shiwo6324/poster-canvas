@@ -1,12 +1,23 @@
 import { updateCanvasStyle, updateCanvasTitle } from '@/src/store/editStore'
 import { ICanvas } from '@/src/types/editStoreTypes'
-import { ColorInput, DEFAULT_THEME, FileInput, TextInput } from '@mantine/core'
+import html2canvas from 'html2canvas'
+
+import {
+  Button,
+  ColorInput,
+  DEFAULT_THEME,
+  FileInput,
+  TextInput,
+} from '@mantine/core'
 import CNumberInput from '../input/number-input'
+import React from 'react'
+import canvasStore from '@/src/store/canvasStore'
 
 const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
   const { title } = canvas
   const { width, height, backgroundColor } = canvas.content.style
-
+  const posterRef = React.useRef<HTMLDivElement>(null)
+  const { canvasContainer } = canvasStore()
   const handleCanvasPropsChange = ({
     name,
     value,
@@ -97,6 +108,9 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
       </div>
 
       <div className="flex flex-col gap-3 border-b border-primary-grey-200 px-5 py-3">
+        <div className="h-12 w-12 bg-red-200" ref={posterRef}>
+          2
+        </div>
         <div className="flex flex-col gap-3">
           <label htmlFor="canvasBgImage" className="text-[10px] font-bold">
             背景图片
@@ -118,6 +132,29 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
           <label htmlFor="canvasBgImage" className="text-[10px] font-bold">
             导出
           </label>
+          <Button
+            onClick={() => {
+              if (posterRef.current) {
+                html2canvas(canvasContainer)
+                  .then((canvas) => {
+                    const imgData = canvas.toDataURL('image/png')
+                    console.log('图像数据：', imgData)
+                    // 创建一个虚拟的下载链接
+                    const downloadLink = document.createElement('a')
+                    downloadLink.href = imgData
+                    downloadLink.download = 'poster.png' // 设置下载文件名
+                    document.body.appendChild(downloadLink)
+                    downloadLink.click()
+                    document.body.removeChild(downloadLink)
+                  })
+                  .catch((error) => {
+                    console.error('导出图像失败：', error)
+                  })
+              }
+            }}
+          >
+            导出为png
+          </Button>
           {/* <FileInput
             id="canvasBgImage"
             className="no-ring w-full rounded-sm border border-primary-grey-200"

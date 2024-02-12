@@ -19,14 +19,20 @@ import { useClickOutside, useHotkeys } from '@mantine/hooks'
 import EditArea from './canvas/components/edit-area'
 import Zoom from './canvas/components/zoom'
 import { useZoomStore } from 'src/store/zoom-store'
+import canvasStore from '../store/canvasStore'
 
 const Canvas = () => {
   const { canvas, selectedComponents } = useEditStore()
+  const { setCanvasContainer } = canvasStore()
   const { zoom, zoomOut, zoomIn, resetZoom } = useZoomStore()
   const id = useCanvasId()
+  const canvasRef = React.useRef(null)
   const divRef = useClickOutside(() => {
     // setSelectedComponent(-1)
   })
+  React.useEffect(() => {
+    setCanvasContainer(divRef.current)
+  }, [])
   useHotkeys([
     ['ctrl+a', selectAllComponents],
     [
@@ -93,8 +99,8 @@ const Canvas = () => {
 
     // 3、获取 canvas 在页面中的位置
     const canvasDOMPos = {
-      top: canvasDom.top,
-      left: canvasDom.left,
+      top: canvasDom.top + window.scrollY, // 考虑垂直滚动的偏移量
+      left: canvasDom.left + window.scrollX, // 考虑水平滚动的偏移量
     }
     // 4、计算 draggedElement 相对于 canvas 的顶部和左侧的距离，
     // 注意，如果我们直接将此位置赋值给 draggedElement，那么元素的顶部和左侧将是鼠标的当前位置，元素将不会出现居中对齐鼠标的效果。
