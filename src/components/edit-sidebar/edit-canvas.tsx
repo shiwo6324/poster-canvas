@@ -1,15 +1,19 @@
-import { useEditStore } from '@/src/store/editStore'
+import { updateCanvasStyle, updateCanvasTitle } from '@/src/store/editStore'
 import { ICanvas } from '@/src/types/editStoreTypes'
 import { ColorInput, DEFAULT_THEME, FileInput, TextInput } from '@mantine/core'
 import CNumberInput from '../input/number-input'
 
 const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
-  const { updateCanvasStyle, updateCanvasTitle } = useEditStore()
-
   const { title } = canvas
   const { width, height, backgroundColor } = canvas.content.style
 
-  const handleCanvasPropsChange = ({ name, value }: { name: string; value: string | number }) => {
+  const handleCanvasPropsChange = ({
+    name,
+    value,
+  }: {
+    name: string
+    value: string | number
+  }) => {
     updateCanvasStyle({ [name]: value })
   }
   return (
@@ -23,15 +27,17 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
         <div className="flex flex-col gap-4 px-6 py-3">
           <CNumberInput
             defaultValue={width as string}
-            onChange={handleCanvasPropsChange}
+            onChange={(value: number | string) => {
+              updateCanvasStyle({ width: value })
+            }}
             id="w"
-            event="width"
           />
           <CNumberInput
             defaultValue={height as string}
-            onChange={handleCanvasPropsChange}
+            onChange={(value: number | string) => {
+              updateCanvasStyle({ height: value })
+            }}
             id="h"
-            event="height"
           />
         </div>
       </section>
@@ -69,12 +75,16 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
               withPicker={false}
               defaultValue={backgroundColor}
               onChange={(color) => {
-                handleCanvasPropsChange({ name: 'backgroundColor', value: color })
+                handleCanvasPropsChange({
+                  name: 'backgroundColor',
+                  value: color,
+                })
               }}
               className="no-ring w-full rounded-sm border border-primary-grey-200"
               classNames={{
                 input: 'text-primary-grey-300 input-ring px-12',
-                dropdown: 'bg-primary-black  text-primary-grey-300 border-primary-grey-200',
+                dropdown:
+                  'bg-primary-black  text-primary-grey-300 border-primary-grey-200',
               }}
               swatches={[
                 ...DEFAULT_THEME.colors.red,

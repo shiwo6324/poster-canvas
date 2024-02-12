@@ -1,6 +1,4 @@
 import { useEditStore } from '@/src/store/editStore'
-import { Input, Group, Text } from '@mantine/core'
-import React from 'react'
 import EditCanvas from './edit-canvas'
 import EditComponent from './edit-component'
 import EditMutiComponents from './edit-muti-components'

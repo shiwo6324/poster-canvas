@@ -1,4 +1,4 @@
-import { useEditStore } from '@/src/store/editStore'
+import { setSelectedComponent } from '@/src/store/editStore'
 import { CompType } from '@/src/types/const'
 import { IComponentWithKey } from '@/src/types/editStoreTypes'
 import { Image } from '@mantine/core'
@@ -16,10 +16,7 @@ const OverlayComponent = ({
   index: number
   style: React.CSSProperties
 }) => {
-  const { setSelectedComponent } = useEditStore()
   const handleSetSelectedComponent = () => {
-    console.log('触发 handleSetSelectedComponent')
-
     setSelectedComponent(index)
   }
   let left

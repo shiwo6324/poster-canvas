@@ -1,4 +1,12 @@
-import { useEditStore } from '@/src/store/editStore'
+import {
+  addIndex,
+  bringToBack,
+  bringToFront,
+  copyComponents,
+  deleteComponents,
+  minusIndex,
+  useEditStore,
+} from '@/src/store/editStore'
 import { IComponentWithKey } from '@/src/types/editStoreTypes'
 import React from 'react'
 import OverlayComponent from './overlay-component'
@@ -12,16 +20,7 @@ interface EditMenuProps {
 }
 
 const EditMenu = ({ style, selectedComponentsSize }: EditMenuProps) => {
-  const {
-    canvas,
-    deleteComponents,
-    selectedComponents,
-    copyComponents,
-    bringToFront,
-    bringToBack,
-    addIndex,
-    minusIndex,
-  } = useEditStore()
+  const { canvas, selectedComponents } = useEditStore()
 
   if (selectedComponentsSize === 0) return null
   const components = canvas.content.components
@@ -31,27 +30,35 @@ const EditMenu = ({ style, selectedComponentsSize }: EditMenuProps) => {
   const isOverLay = (component: IComponentWithKey) => {
     const selectedComponentStyle = {
       top: selectedComponent.style?.top,
-      bottom: selectedComponent.style?.height + selectedComponent.style?.top,
+      bottom:
+        (selectedComponent.style?.height as number) +
+        (selectedComponent.style?.top as number),
       left: selectedComponent.style?.left,
-      right: selectedComponent.style.width + selectedComponent.style?.left,
+      right:
+        (selectedComponent.style.width as number) +
+        (selectedComponent.style?.left as number),
     }
 
     const currentComponentStyle = {
       top: component.style?.top,
-      bottom: component.style?.height + component.style?.top,
+      bottom:
+        (component.style?.height as number) + (component.style?.top as number),
       left: component.style?.left,
-      right: component.style.width + component.style?.left,
+      right:
+        (component.style.width as number) + (component.style?.left as number),
     }
     // 判断两个组件是否重叠
     if (
       // 如果被选中组件的顶部位置大于传入组件的底部位置，越往上的元素，其 top 值会越小，底部位置越高。
-      selectedComponentStyle.top > currentComponentStyle.bottom ||
+      (selectedComponentStyle.top as number) > currentComponentStyle.bottom ||
       // 如果被选中组件的右侧位置小于传入组件的左侧位置
-      selectedComponentStyle.right < currentComponentStyle.left ||
+      (selectedComponentStyle.right as number) <
+        (currentComponentStyle.left as number) ||
       // 如果被选中组件的底部位置小于传入组件的顶部位置
-      selectedComponentStyle.bottom < currentComponentStyle.top ||
+      (selectedComponentStyle.bottom as number) <
+        (currentComponentStyle.top as number) ||
       // 如果被选中组件的左侧位置大于传入组件的右侧位置
-      selectedComponentStyle.left > currentComponentStyle.right
+      (selectedComponentStyle.left as number) > currentComponentStyle.right
     ) {
       // 如果存在任何一种情况，说明两个组件不重叠，返回 false
       return false
@@ -76,26 +83,41 @@ const EditMenu = ({ style, selectedComponentsSize }: EditMenuProps) => {
         </li>
         {selectedComponent.type !== CompType.GROUP && (
           <>
-            <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={addIndex}>
+            <li
+              className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100"
+              onClick={addIndex}
+            >
               上移一层
             </li>
-            <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={minusIndex}>
+            <li
+              className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100"
+              onClick={minusIndex}
+            >
               下移一层
             </li>
           </>
         )}
-        <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={bringToFront}>
+        <li
+          className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100"
+          onClick={bringToFront}
+        >
           置顶
         </li>
-        <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100" onClick={bringToBack}>
+        <li
+          className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100"
+          onClick={bringToBack}
+        >
           置底
         </li>
-        <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100">附近组件</li>
+        <li className="cursor-pointer rounded px-2 py-1 hover:bg-gray-100">
+          附近组件
+        </li>
 
         {selectedComponentsSize === 1 && (
           <>
             {components.map((component, index) => {
-              return index === selectedComponentIndex || !isOverLay(component) ? null : (
+              return index === selectedComponentIndex ||
+                !isOverLay(component) ? null : (
                 <OverlayComponent
                   style={style}
                   key={component.key}

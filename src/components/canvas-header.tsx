@@ -1,6 +1,5 @@
 import { AppShell, Tooltip } from '@mantine/core'
 import { BsFileEarmarkText } from 'react-icons/bs'
-import { GiBroom } from 'react-icons/gi'
 import { MdOutlinePreview } from 'react-icons/md'
 import { TbArrowBack, TbArrowForward } from 'react-icons/tb'
 import { unstable_usePrompt, useNavigate } from 'react-router-dom'
@@ -8,20 +7,18 @@ import { useCanvasId, useCanvasType } from 'src/hooks/useCanvasIdAndType'
 import { FaTrashCan } from 'react-icons/fa6'
 
 import { saveCanvas } from 'src/request/canvas'
-import { useEditStore } from 'src/store/editStore'
+import {
+  clearCanvas,
+  getNextCanvasHistory,
+  getPrevCanvasHistory,
+  updateCanvasId,
+  useEditStore,
+} from 'src/store/editStore'
 import { toast } from 'sonner'
 import { useZoomStore } from 'src/store/zoom-store'
 
 const CanvasHeader = () => {
-  const {
-    canvas,
-    clearCanvas,
-    getNextCanvasHistory,
-    getPrevCanvasHistory,
-    updateCanvasId,
-    setSaveCanvas,
-    hasSaved,
-  } = useEditStore()
+  const { canvas, setSaveCanvas, hasSaved } = useEditStore()
   const { resetZoom } = useZoomStore()
   const navigate = useNavigate()
   const id = useCanvasId()
@@ -92,7 +89,6 @@ const CanvasHeader = () => {
             className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
           >
             <MdOutlinePreview size={25} />
-            {/* <p onClick={handleSaveAndPreview}>保存并预览</p> */}
           </li>
         </Tooltip>
         <Tooltip label="上一步">
@@ -101,7 +97,6 @@ const CanvasHeader = () => {
             className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
           >
             <TbArrowBack size={25} />
-            {/* <p>上一步</p> */}
           </li>
         </Tooltip>
         <Tooltip label="下一步">
@@ -118,9 +113,6 @@ const CanvasHeader = () => {
             className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
           >
             <FaTrashCan size={20} />
-            {/* <p className="group-hover:text-red-500" onClick={handleClearCanvas}>
-            清空
-          </p> */}
           </li>
         </Tooltip>
       </ul>

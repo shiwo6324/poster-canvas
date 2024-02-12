@@ -1,12 +1,11 @@
 import {
   cancelGroupSelectedComponents,
+  editSelectedComponentsStyle,
   groupSelectedComponents,
-  useEditStore,
 } from '@/src/store/editStore'
-import { Button, NativeSelect, Select } from '@mantine/core'
+import { Button, Select } from '@mantine/core'
 
 const EditMutiComponents = ({ isGroup }: { isGroup: boolean }) => {
-  const { editSelectedComponentsStyle } = useEditStore()
   const handleGroupComponents = () => {
     groupSelectedComponents()
   }

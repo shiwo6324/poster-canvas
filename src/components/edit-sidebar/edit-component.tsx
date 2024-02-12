@@ -1,4 +1,9 @@
-import { useEditStore } from '@/src/store/editStore'
+import {
+  editSelectedComponentsStyle,
+  updateSelectedComponentAttr,
+  updateSelectedComponentStyle,
+  updateSelectedComponentValue,
+} from '@/src/store/editStore'
 import { CompType } from '@/src/types/const'
 import { IComponent } from '@/src/types/editStoreTypes'
 import { Button, ColorInput, DEFAULT_THEME } from '@mantine/core'
@@ -15,21 +20,14 @@ import {
   textDecorationOptions,
 } from '@/src/constants'
 import CSelect from '../input/Select'
-
+type StyleItem = { name: string; value: string | number }
+type StyleInput = StyleItem | StyleItem[]
 const EditComponent = ({ component }: { component: IComponent }) => {
-
   const { style, onClick = '' } = component
-  const {
-    updateSelectedComponentValue,
-    updateSelectedComponentStyle,
-    updateSelectedComponentAttr,
-    editSelectedComponentsStyle,
-  } = useEditStore()
   const {
     fontSize,
     fontWeight,
     lineHeight,
-    textDecorationLine,
     textDecoration,
     transform,
     textAlign,
@@ -45,33 +43,46 @@ const EditComponent = ({ component }: { component: IComponent }) => {
   const handleUpdateValueProps = (value: string) => {
     updateSelectedComponentValue(value)
   }
-  const handleUpdateStyleProps = (item: {
-    name: string
-    value: string | number | { name: string; value: string | number }[]
-  }) => {
+  const handleUpdateStyleProps = (item: StyleInput) => {
     const attrs = Array.isArray(item) ? item : [item]
 
-    const newStyle: React.CSSProperties = {}
+    const newStyle: { [key: string]: string } = {}
     attrs.forEach((attr) => {
       const { name, value } = attr
-      newStyle[name] = value
+      newStyle[name] = value.toString()
     })
     updateSelectedComponentStyle(newStyle)
   }
-  const handleUpdateAttrProps = ({ name, value }: { name: string; value: string | number }) => {
+  const handleUpdateAttrProps = ({
+    name,
+    value,
+  }: {
+    name: any
+    value: string | number
+  }) => {
     updateSelectedComponentAttr(name, value)
   }
-  const handleAnimationChange = ({ name, value }: { name: string; value: string }) => {
+  const handleAnimationChange = ({
+    name,
+    value,
+  }: {
+    name: string
+    value: string
+  }) => {
     const newStyle = {
       animationName: value,
       animationIterationCount:
-        style.animationIterationCount == undefined ? 1 : style.animationIterationCount,
-      animationDuration: style.animationDuration == undefined ? '1s' : style.animationDuration,
-      animationDelay: style.animationDelay == undefined ? 0 : style.animationDelay,
+        style.animationIterationCount == undefined
+          ? 1
+          : style.animationIterationCount,
+      animationDuration:
+        style.animationDuration == undefined ? '1s' : style.animationDuration,
+      animationDelay:
+        style.animationDelay == undefined ? 0 : style.animationDelay,
       animationPlayState: 'running',
     }
 
-    updateSelectedComponentStyle(newStyle)
+    updateSelectedComponentStyle(newStyle as React.CSSProperties)
   }
   return (
     <>
@@ -245,7 +256,10 @@ const EditComponent = ({ component }: { component: IComponent }) => {
               <CNumberInput
                 id="圆角"
                 onChange={(number) => {
-                  handleUpdateStyleProps({ name: 'borderRadius', value: number })
+                  handleUpdateStyleProps({
+                    name: 'borderRadius',
+                    value: number,
+                  })
                 }}
                 defaultValue={borderRadius as string}
               />
@@ -260,7 +274,8 @@ const EditComponent = ({ component }: { component: IComponent }) => {
             className="rounded-none  border border-primary-grey-200 bg-transparent   outline-none ring-offset-0 focus:ring-1  focus:ring-primary-green focus:ring-offset-0 focus-visible:ring-offset-0"
             classNames={{
               input: 'text-primary-grey-300 input-ring px-12',
-              dropdown: 'bg-primary-black  text-primary-grey-300 border-primary-grey-200',
+              dropdown:
+                'bg-primary-black  text-primary-grey-300 border-primary-grey-200',
             }}
             withPicker={false}
             defaultValue={borderColor}
@@ -283,7 +298,10 @@ const EditComponent = ({ component }: { component: IComponent }) => {
             <CSelect
               defaultValue={borderStyle as string}
               onChange={(value) => {
-                handleUpdateStyleProps({ name: 'borderStyle', value: value as string })
+                handleUpdateStyleProps({
+                  name: 'borderStyle',
+                  value: value as string,
+                })
               }}
               data={boarderStyleOptions}
             />
@@ -298,12 +316,16 @@ const EditComponent = ({ component }: { component: IComponent }) => {
               className="rounded-none  border border-primary-grey-200 bg-transparent   outline-none ring-offset-0 focus:ring-1  focus:ring-primary-green focus:ring-offset-0 focus-visible:ring-offset-0"
               classNames={{
                 input: 'text-primary-grey-300 input-ring px-12',
-                dropdown: 'bg-primary-black  text-primary-grey-300 border-primary-grey-200',
+                dropdown:
+                  'bg-primary-black  text-primary-grey-300 border-primary-grey-200',
               }}
               withPicker={false}
               defaultValue={backgroundColor}
               onChange={(color) => {
-                handleUpdateStyleProps({ name: 'backgroundColor', value: color })
+                handleUpdateStyleProps({
+                  name: 'backgroundColor',
+                  value: color,
+                })
               }}
               swatches={[
                 ...DEFAULT_THEME.colors.red,
@@ -328,8 +350,7 @@ const EditComponent = ({ component }: { component: IComponent }) => {
           {style.animationName && (
             <>
               <CNumberInput
-                defaultValue={(style.animationDuration as number) || 0}
-                label="动画持续时长(s)"
+                defaultValue={(style.animationDuration as any) || 0}
                 onChange={(value) => {
                   handleUpdateStyleProps({
                     name: 'animationDuration',
@@ -373,7 +394,7 @@ const EditComponent = ({ component }: { component: IComponent }) => {
                     })
                     setTimeout(() => {
                       handleUpdateStyleProps([
-                        { name: 'animationName', value },
+                        { name: 'animationName', value: value as string },
                         { name: 'animationPlayState', value: 'running' },
                       ])
                     })

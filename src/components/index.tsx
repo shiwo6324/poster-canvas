@@ -1,5 +1,16 @@
 import React from 'react'
-import { addComponent, initCanvas, useEditStore } from 'src/store/editStore'
+import {
+  addComponent,
+  clearCanvas,
+  getNextCanvasHistory,
+  getPrevCanvasHistory,
+  initCanvas,
+  resetCanvasChangeHistory,
+  selectAllComponents,
+  setCanvas,
+  setSelectedComponent,
+  useEditStore,
+} from 'src/store/editStore'
 import CanvasItem from './canvas/components/canvas-item'
 import { toast } from 'sonner'
 import { getCanvas } from 'src/request/canvas'
@@ -10,18 +21,8 @@ import Zoom from './canvas/components/zoom'
 import { useZoomStore } from 'src/store/zoom-store'
 
 const Canvas = () => {
-  const {
-    canvas,
-    setCanvas,
-    clearCanvas,
-    selectAllComponents,
-    selectedComponents,
-    setSelectedComponent,
-    getNextCanvasHistory,
-    getPrevCanvasHistory,
-  } = useEditStore()
+  const { canvas, selectedComponents } = useEditStore()
   const { zoom, zoomOut, zoomIn, resetZoom } = useZoomStore()
-  const { resetCanvasChangeHistory } = useEditStore()
   const id = useCanvasId()
   const divRef = useClickOutside(() => {
     // setSelectedComponent(-1)
@@ -120,7 +121,8 @@ const Canvas = () => {
           e.preventDefault()
         }}
         onClick={(e) => {
-          if (e.target.id === 'canvas') {
+          const target = e.target as HTMLDivElement
+          if (target.id === 'canvas') {
             setSelectedComponent(-1)
           }
         }}

@@ -1,7 +1,7 @@
 import { Select } from '@mantine/core'
 
 interface CSelectProps {
-  onChange: (value: number | string) => void
+  onChange: (value: any) => void
   data: { label: string; value: string }[]
   defaultValue: string
 }

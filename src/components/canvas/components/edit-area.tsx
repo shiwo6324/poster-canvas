@@ -1,6 +1,12 @@
 import { throttle } from 'lodash'
 import React from 'react'
-import { useEditStore } from 'src/store/editStore'
+import {
+  recordCanvasPostionHistory,
+  updateSelectedComponentAttr,
+  updateSelectedComponentStyle,
+  updateSelectedComponentsPosition,
+  useEditStore,
+} from 'src/store/editStore'
 import { useZoomStore } from 'src/store/zoom-store'
 import FlexDots from './flex-dots'
 import { CompType } from '@/src/types/const'
@@ -12,14 +18,7 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
   const [textAreaFocused, setTextAreaFocused] = React.useState(false)
   const [showContextMenu, setShowContextMenu] = React.useState(false)
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
-  const {
-    canvas,
-    selectedComponents,
-    updateSelectedComponentsPosition,
-    updateSelectedComponentAttr,
-    updateSelectedComponentStyle,
-    recordCanvasPostionHistory,
-  } = useEditStore()
+  const { canvas, selectedComponents } = useEditStore()
   const { zoom } = useZoomStore()
   const size = selectedComponents.size
   if (size === 0) return

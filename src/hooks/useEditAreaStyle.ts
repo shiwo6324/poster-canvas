@@ -1,4 +1,3 @@
-import React from 'react'
 import { IComponentWithKey } from '../types/editStoreTypes'
 
 export const useEditAreaStyle = (
@@ -16,8 +15,14 @@ export const useEditAreaStyle = (
     top = Math.min(top, component.style.top as number)
     left = Math.min(left, component.style.left as number)
     // 需要 top/left 加上 height/width 的原因是，计算哪个组件在最下边/右边
-    bottom = Math.max(bottom, (component.style.top as number) + (component.style.height as number))
-    right = Math.max(right, (component.style.left as number) + (component.style.width as number))
+    bottom = Math.max(
+      bottom,
+      (component.style.top as number) + (component.style.height as number),
+    )
+    right = Math.max(
+      right,
+      (component.style.left as number) + (component.style.width as number),
+    )
   })
 
   // 需要加上红色的边框值和内层的的蓝色的边框

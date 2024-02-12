@@ -2,14 +2,14 @@ import { AppShell, Flex } from '@mantine/core'
 import Canvas from '@/src/components'
 import Sidebar from '@/src/components/left-sidebar'
 
-import { useEditStore } from 'src/store/editStore'
+import { setSelectedComponent, useEditStore } from 'src/store/editStore'
 import { useZoomStore } from 'src/store/zoom-store'
 import { useSidebarTypeStore } from '@/src/store/sidebarStore'
 import { CompType } from '@/src/types/const'
 import EditSidebar from '@/src/components/edit-sidebar'
 
 const EditPage = () => {
-  const { canvas, setSelectedComponent } = useEditStore()
+  const { canvas } = useEditStore()
   const { zoom } = useZoomStore()
   const { setType } = useSidebarTypeStore()
 

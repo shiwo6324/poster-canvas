@@ -7,8 +7,8 @@ interface UserState {
 }
 
 const useUserStore = create<UserState>()(
-  immer((set) => ({
-    isLogin: false,
+  immer(() => ({
+    isLogin: false as boolean,
     name: '',
   })),
 )

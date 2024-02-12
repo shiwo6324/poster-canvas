@@ -11,13 +11,17 @@ const AlignLines = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
       {/* 中心 X 轴，对齐画布 */}
       <Line
         id="centerXLine"
-        style={{ top: canvasStyle.height / 2, left: 0, width: canvasStyle.width }}
+        style={{
+          top: (canvasStyle.height as number) / 2,
+          left: 0,
+          width: canvasStyle.width,
+        }}
       />
       <Line
         id="centerYLine"
         style={{
           top: 0,
-          left: canvasStyle.width / 2,
+          left: (canvasStyle.width as number) / 2,
           height: canvasStyle.height,
           backgroundColor: 'red',
         }}

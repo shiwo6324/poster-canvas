@@ -1,6 +1,9 @@
 import { throttle } from 'lodash'
 import React from 'react'
-import { useEditStore } from 'src/store/editStore'
+import {
+  recordCanvasPostionHistory,
+  updateSelectedComponentsPosition,
+} from 'src/store/editStore'
 
 interface FlexDotsProps {
   zoom: number
@@ -9,7 +12,6 @@ interface FlexDotsProps {
 
 const FlexDots = ({ zoom, style }: FlexDotsProps) => {
   const { width, height, transform } = style
-  const { updateSelectedComponentsPosition, recordCanvasPostionHistory } = useEditStore()
 
   const onMouseDown = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -19,7 +21,7 @@ const FlexDots = ({ zoom, style }: FlexDotsProps) => {
     if (!direction) return
     let startX = e.pageX
     let startY = e.pageY
-    const move = throttle((e: React.MouseEvent) => {
+    const move = throttle((e: MouseEvent) => {
       const x = e.pageX
       const y = e.pageY
       // 计算鼠标在水平和垂直方向上的移动距离。
@@ -28,7 +30,12 @@ const FlexDots = ({ zoom, style }: FlexDotsProps) => {
 
       disX = disX * (100 / zoom)
       disY = disY * (100 / zoom)
-      const newStyle: { top?: number; left?: number; width?: number; height?: number } = {}
+      const newStyle: {
+        top?: number
+        left?: number
+        width?: number
+        height?: number
+      } = {}
 
       // 需要考虑什么方位的伸缩会改变 top 和 left，比如：右下角的伸缩不会修改 top 和 left
       if (direction.indexOf('top') >= 0) {
