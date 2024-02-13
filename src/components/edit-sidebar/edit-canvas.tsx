@@ -11,7 +11,7 @@ import {
 } from '@mantine/core'
 import CNumberInput from '../input/number-input'
 import React from 'react'
-import canvasStore from '@/src/store/canvasStore'
+import canvasStore from '@/src/store/canvasRefStore'
 import classNames from 'classnames'
 
 const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
