@@ -1,19 +1,22 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
-interface UserState {
-  canvasContainer: HTMLDivElement
-  setCanvasContainer: (canvasContainer: HTMLDivElement) => void
+const initCanvasRefState: CanvasRefStoreType = {
+  canvasContainer: {} as HTMLDivElement,
 }
 
-const canvasStore = create<UserState>()(
-  immer((set) => ({
-    canvasContainer: {} as HTMLDivElement,
-    setCanvasContainer: (canvasContainer) =>
-      set((state) => {
-        state.canvasContainer = canvasContainer as any
-      }),
-  })),
+const useCanvasRefStore = create<CanvasRefStoreType>()(
+  immer(() => {
+    return {
+      ...initCanvasRefState,
+    }
+  }),
 )
 
-export default canvasStore
+export const setCanvasContainer = (canvasContainer: HTMLDivElement) => {
+  useCanvasRefStore.setState((state) => {
+    state.canvasContainer = canvasContainer as any
+  })
+}
+
+export default useCanvasRefStore

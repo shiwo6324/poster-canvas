@@ -19,14 +19,12 @@ import { useClickOutside, useHotkeys } from '@mantine/hooks'
 import EditArea from './canvas/components/edit-area'
 import Zoom from './canvas/components/zoom'
 import { useZoomStore } from 'src/store/zoom-store'
-import canvasStore from '../store/canvasStore'
+import { setCanvasContainer } from '../store/canvasStore'
 
 const Canvas = () => {
   const { canvas, selectedComponents } = useEditStore()
-  const { setCanvasContainer } = canvasStore()
   const { zoom, zoomOut, zoomIn, resetZoom } = useZoomStore()
   const id = useCanvasId()
-  const canvasRef = React.useRef(null)
   const divRef = useClickOutside(() => {
     // setSelectedComponent(-1)
   })
