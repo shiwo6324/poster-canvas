@@ -75,7 +75,7 @@ const CanvasHeader = () => {
         {/* <li className=" cursor-pointer" onClick={() => navigate('/list')}>
           查看列表
         </li> */}
-        <Tooltip label="保存">
+        <Tooltip label="保存" openDelay={200}>
           <li
             onClick={handleSaveCanvas}
             className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
@@ -83,7 +83,7 @@ const CanvasHeader = () => {
             <BsFileEarmarkText size={25} className=" " />
           </li>
         </Tooltip>
-        <Tooltip label="保存并预览">
+        <Tooltip label="保存并预览" openDelay={200}>
           <li
             onClick={handleSaveAndPreview}
             className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
@@ -91,7 +91,7 @@ const CanvasHeader = () => {
             <MdOutlinePreview size={25} />
           </li>
         </Tooltip>
-        <Tooltip label="上一步">
+        <Tooltip label="上一步" openDelay={200}>
           <li
             onClick={getPrevCanvasHistory}
             className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
@@ -99,7 +99,7 @@ const CanvasHeader = () => {
             <TbArrowBack size={25} />
           </li>
         </Tooltip>
-        <Tooltip label="下一步">
+        <Tooltip label="下一步" openDelay={200}>
           <li
             onClick={getNextCanvasHistory}
             className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
@@ -107,7 +107,7 @@ const CanvasHeader = () => {
             <TbArrowForward size={25} />
           </li>
         </Tooltip>
-        <Tooltip label="清空画布">
+        <Tooltip label="清空画布" openDelay={200}>
           <li
             onClick={handleClearCanvas}
             className="group flex h-full cursor-pointer  items-center gap-1 px-2.5 py-5 transition-all hover:cursor-pointer hover:bg-primary-grey-200 "
