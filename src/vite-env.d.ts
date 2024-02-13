@@ -26,3 +26,7 @@ type SidebarStoreType = {
     | CompType.TEMPLATE
     | CompType.EMPTY
 }
+
+type ZoomStoreType = {
+  zoom: number
+}

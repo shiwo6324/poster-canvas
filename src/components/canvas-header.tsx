@@ -16,11 +16,10 @@ import {
   useEditStore,
 } from 'src/store/editStore'
 import { toast } from 'sonner'
-import { useZoomStore } from 'src/store/zoom-store'
+import { resetZoom } from '../store/zoom-store'
 
 const CanvasHeader = () => {
   const { canvas, hasSaved } = useEditStore()
-  const { resetZoom } = useZoomStore()
   const navigate = useNavigate()
   const id = useCanvasId()
   const type = useCanvasType()
