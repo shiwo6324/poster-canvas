@@ -12,6 +12,7 @@ import {
 import CNumberInput from '../input/number-input'
 import React from 'react'
 import canvasStore from '@/src/store/canvasStore'
+import classNames from 'classnames'
 
 const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
   const { title } = canvas
@@ -129,9 +130,15 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
           <label htmlFor="canvasBgImage" className="text-[10px] font-bold">
             导出
           </label>
-          <Button
+          <button
+            className="flex w-full items-center  rounded-md border   border-primary-grey-200 bg-primary-black px-4
+             py-2  
+              text-primary-grey-300 transition-all 
+               hover:cursor-pointer   hover:bg-primary-green hover:text-primary-black"
             onClick={() => {
-              if (posterRef.current) {
+              console.log(1)
+
+              if (canvasContainer) {
                 html2canvas(canvasContainer, {
                   allowTaint: true,
                   useCORS: true,
@@ -153,8 +160,8 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
               }
             }}
           >
-            导出为png
-          </Button>
+            <p className="flex-1 text-center">导出为 png</p>
+          </button>
           {/* <FileInput
             id="canvasBgImage"
             className="no-ring w-full rounded-sm border border-primary-grey-200"

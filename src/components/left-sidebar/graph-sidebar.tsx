@@ -60,7 +60,7 @@ const GraphSidebar = () => {
     <>
       {settings.map((item) => (
         <Menu.Item
-          key={item.value}
+          key={item.key}
           onClick={() => addComponent({ ...item, type })}
           onDragStart={(e) => {
             e.dataTransfer.setData(
