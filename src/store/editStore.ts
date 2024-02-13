@@ -15,23 +15,16 @@ import { useEditAreaStyle } from '../hooks/useEditAreaStyle'
 
 enableMapSet()
 
-interface EditStoreState {
-  canvas: ICanvas
-  selectedComponents: Set<number>
-  canvasChangeHistory: {
-    canvas: ICanvas
-    selectedComponents: Set<number>
-  }[]
-  // 创建存储历史记录的数组， 之所以需要单独存，在上一步、下一步这个过程当中，数组里面的组件是有可能发生变化的，比如：原先选中 10 个组件，这次变了，变成选中 1 个组件了，那这个时候选中状态的 selectedComponents 不变的话会出错
-  // 记录存储当前处于哪个历史记录的下标
-  canvasChangeHistoryIndex: number
-  maxHistory: number
-  hasSaved: boolean
-}
+const initEditStoreState: EditStoreStoreType = {
+  canvas: {
+    id: undefined as any,
+    title: '未命名',
+    type: 'content' as any,
+    content: getDefaultCanvasContent(),
+  },
 
-export const useEditStore = create<EditStoreState>()(
-  immer(
-    devtools(() => ({
+  canvasChangeHistory: [
+    {
       canvas: {
         id: undefined as any,
         title: '未命名',
@@ -39,23 +32,22 @@ export const useEditStore = create<EditStoreState>()(
         content: getDefaultCanvasContent(),
       },
 
-      canvasChangeHistory: [
-        {
-          canvas: {
-            id: undefined as any,
-            title: '未命名',
-            type: 'content' as any,
-            content: getDefaultCanvasContent(),
-          },
-
-          selectedComponents: new Set(),
-        },
-      ],
-      canvasChangeHistoryIndex: 0,
       selectedComponents: new Set(),
-      maxHistory: 100,
-      hasSaved: true as boolean,
-    })),
+    },
+  ],
+  canvasChangeHistoryIndex: 0,
+  selectedComponents: new Set(),
+  maxHistory: 100,
+  hasSaved: true as boolean,
+}
+
+export const useEditStore = create<EditStoreStoreType>()(
+  immer(
+    devtools(() => {
+      return {
+        ...initEditStoreState,
+      }
+    }),
   ),
 )
 
@@ -406,7 +398,7 @@ export const copyComponents = () => {
       // 组合组件
       if (componentToCopy.type === CompType.GROUP) {
         componentToCopy.groupComponentKeys = []
-        component.groupComponentKeys?.forEach((key) => {
+        component.groupComponentKeys?.forEach((key: number) => {
           const childIndex = map.get(key)
           const childComponent = setCopiedComponentPosition(
             state.canvas.content.components[childIndex],
@@ -441,7 +433,7 @@ export const deleteComponents = () => {
     state.selectedComponents.forEach((index) => {
       const component = state.canvas.content.components[index]
       if (component.type === CompType.GROUP) {
-        component.groupComponentKeys?.forEach((key) => {
+        component.groupComponentKeys?.forEach((key: number) => {
           newSelectedComponents.add(map.get(key))
         })
       }
@@ -458,7 +450,7 @@ export const deleteComponents = () => {
         const groupIndex = map.get(child.groupKey)
         const group = state.canvas.content.components[groupIndex]
         const newSelectedComponents: Set<number> = new Set()
-        group.groupComponentKeys?.forEach((key) => {
+        group.groupComponentKeys?.forEach((key: number) => {
           if (key !== child.key) {
             newSelectedComponents.add(map.get(key))
           }
@@ -473,7 +465,7 @@ export const deleteComponents = () => {
       }
     }
     state.canvas.content.components = state.canvas.content.components.filter(
-      (component, index) => {
+      (component: IComponentWithKey, index: number) => {
         const del = newSelectedComponents.has(index)
         if (del) {
           // 如果这个组件是组合子组件
@@ -579,8 +571,8 @@ export const recordCanvasPostionHistory = () => {
 }
 // 记录画布的操作历史
 // 该函数中需要操作的 状态 是函数调用处的 状态(history)，而不是该函数中的 state
-export const recordCanvasHistory = (history: EditStoreState) => {
-  useEditStore.setState((state) => {
+export const recordCanvasHistory = (history: EditStoreStoreType) => {
+  useEditStore.setState(() => {
     // 在撤销回退过程中，此时历史下标为 currentIndex，如果此时用户又去修改画布或者组件属性,
     // 重新插入了新的历史进来，那么把 currentIndex 之后的记录全部删除，再把新的画布数据插入进来
     // 历史记录：0 1 2 3 4 5 ，如果回退到下标 index 2，并且修改了该历史记录的内容，则从 2 开始删除后面的历史记录
@@ -677,7 +669,7 @@ export const updateSelectedComponentsPosition = (position: {
       const component = components[index]
 
       if (component.type === CompType.GROUP) {
-        component.groupComponentKeys?.forEach((key) => {
+        component.groupComponentKeys?.forEach((key: number) => {
           newSelectedComponents.add(map.get(key))
         })
       }
@@ -720,7 +712,7 @@ export const updateSelectedComponentsPosition = (position: {
         const groupIndex = map.get(component.groupKey)
         const group = components[groupIndex]
         const newSelectedComponents: Set<number> = new Set()
-        group.groupComponentKeys?.forEach((key) => {
+        group.groupComponentKeys?.forEach((key: number) => {
           newSelectedComponents.add(map.get(key))
         })
         Object.assign(
@@ -897,7 +889,7 @@ export const groupSelectedComponents = () => {
       const component = components[index]
       // 如果组件本身是组合组件，遍历查找该组合组件的子组件
       if (component.type === CompType.GROUP) {
-        component.groupComponentKeys?.forEach((key) => {
+        component.groupComponentKeys?.forEach((key: number) => {
           const childIndex = map.get(key)
           const child = components[childIndex]
           groupComponent.groupComponentKeys?.push(child.key)
@@ -913,7 +905,7 @@ export const groupSelectedComponents = () => {
     })
     // 删除老的组合组件
     components.filter(
-      (component, index) =>
+      (component: IComponentWithKey, index: number) =>
         !(
           state.selectedComponents.has(index) &&
           component.type === CompType.GROUP
@@ -945,7 +937,7 @@ export const cancelGroupSelectedComponents = () => {
     const newSelectedComponents: Set<number> = new Set()
     const selectedComponentIndex = [...state.selectedComponents][0]
     const selectedGroup = components[selectedComponentIndex]
-    selectedGroup.groupComponentKeys?.forEach((key) => {
+    selectedGroup.groupComponentKeys?.forEach((key: number) => {
       const componentIndex = map.get(key)
       const component = components[componentIndex]
       component.groupKey = undefined
