@@ -2,21 +2,20 @@ import { CompType } from 'src/types/const'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
-type SidebarType =
-  | CompType.IMAGE
-  | CompType.TEXT
-  | CompType.GRAPH
-  | CompType.TEMPLATE
-  | CompType.EMPTY
-
-interface SidebarTypeState {
-  type: SidebarType
-  setType: (type: SidebarType) => void // 将参数类型改为 SidebarType
+const initSidebarState: SidebarStoreType = {
+  type: CompType.EMPTY,
 }
 
-export const useSidebarTypeStore = create<SidebarTypeState>()(
-  immer((set) => ({
-    type: CompType.EMPTY as SidebarType,
-    setType: (type) => set(() => ({ type })),
-  })),
+export const useSidebarTypeStore = create<SidebarStoreType>()(
+  immer(() => {
+    return {
+      ...initSidebarState,
+    }
+  }),
 )
+
+export const setSidebarType = (type: CompType) => {
+  useSidebarTypeStore.setState((state) => {
+    state.type = type
+  })
+}

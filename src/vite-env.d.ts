@@ -17,3 +17,12 @@ type EditStoreStoreType = {
   maxHistory: number
   hasSaved: boolean
 }
+
+type SidebarStoreType = {
+  type:
+    | CompType.IMAGE
+    | CompType.TEXT
+    | CompType.GRAPH
+    | CompType.TEMPLATE
+    | CompType.EMPTY
+}

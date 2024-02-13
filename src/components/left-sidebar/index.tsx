@@ -1,18 +1,18 @@
-import { AppShell, Button, Menu, rem } from '@mantine/core'
+import { AppShell, Button, Menu } from '@mantine/core'
 import { PiTextTBold } from 'react-icons/pi'
 import { FaImage } from 'react-icons/fa6'
 import { RiRectangleLine } from 'react-icons/ri'
 
 import classNames from 'classnames'
 
-import { useSidebarTypeStore } from 'src/store/sidebarStore'
+import { setSidebarType, useSidebarTypeStore } from 'src/store/sidebarStore'
 import { CompType } from 'src/types/const'
 import TextSidebar from './text-sidebar'
 import ImageSidebar from './image-sidebar'
 import GraphSidebar from './graph-sidebar'
 
 const Sidebar = () => {
-  const { setType, type } = useSidebarTypeStore()
+  const { type } = useSidebarTypeStore()
   return (
     <AppShell.Navbar
       w={'auto'}
@@ -36,7 +36,7 @@ const Sidebar = () => {
                   ? 'bg-primary-green text-primary-black'
                   : 'text-primary-grey-300',
               )}
-              onClick={() => setType(CompType.TEXT)}
+              onClick={() => setSidebarType(CompType.TEXT)}
               variant="transparent"
               leftSection={<PiTextTBold size={30} />}
             >
@@ -57,7 +57,7 @@ const Sidebar = () => {
                   ? 'bg-primary-green text-primary-black'
                   : 'text-primary-grey-300',
               )}
-              onClick={() => setType(CompType.IMAGE)}
+              onClick={() => setSidebarType(CompType.IMAGE)}
               variant="transparent"
               leftSection={<FaImage size={30} />}
             >
@@ -78,7 +78,7 @@ const Sidebar = () => {
                   ? 'bg-primary-green text-primary-black'
                   : 'text-primary-grey-300',
               )}
-              onClick={() => setType(CompType.GRAPH)}
+              onClick={() => setSidebarType(CompType.GRAPH)}
               variant="transparent"
               leftSection={<RiRectangleLine size={30} />}
             >
