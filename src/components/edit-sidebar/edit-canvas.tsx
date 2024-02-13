@@ -108,9 +108,6 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
       </div>
 
       <div className="flex flex-col gap-3 border-b border-primary-grey-200 px-5 py-3">
-        <div className="h-12 w-12 bg-red-200" ref={posterRef}>
-          2
-        </div>
         <div className="flex flex-col gap-3">
           <label htmlFor="canvasBgImage" className="text-[10px] font-bold">
             背景图片
@@ -135,10 +132,13 @@ const EditCanvas = ({ canvas }: { canvas: ICanvas }) => {
           <Button
             onClick={() => {
               if (posterRef.current) {
-                html2canvas(canvasContainer)
+                html2canvas(canvasContainer, {
+                  allowTaint: true,
+                  useCORS: true,
+                  logging: true,
+                })
                   .then((canvas) => {
                     const imgData = canvas.toDataURL('image/png')
-                    console.log('图像数据：', imgData)
                     // 创建一个虚拟的下载链接
                     const downloadLink = document.createElement('a')
                     downloadLink.href = imgData

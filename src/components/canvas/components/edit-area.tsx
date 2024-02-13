@@ -106,7 +106,15 @@ const EditArea = ({ canvasStyle }: { canvasStyle: React.CSSProperties }) => {
     <>
       {size === 1 && <AlignLines canvasStyle={canvasStyle} />}
       <div
-        style={{ top, left, width, height, zIndex: 9999, transform }}
+        style={{
+          top,
+          left,
+          width,
+          height,
+          zIndex: 9999,
+          transform,
+          background: 'rgba(255, 255, 255, 0.35)',
+        }}
         className="absolute cursor-move border-4 border-solid border-[#9AB1DD]"
         onMouseDown={handleMoveSelectedComponents}
         onDoubleClick={() => {
