@@ -17,6 +17,7 @@ const defaultStyle: React.CSSProperties = {
 const settings = [
   {
     key: 'graph-0',
+    name: '矩形',
     value: '',
     style: {
       ...defaultStyle,
@@ -25,6 +26,31 @@ const settings = [
       backgroundColor: '#AABBCC',
     },
   },
+  {
+    key: 'graph-1',
+    name: '圆形',
+    value: '',
+    style: {
+      ...defaultStyle,
+      borderWidth: 0,
+      borderStyle: 'solid',
+      borderRadius: '50%', // 添加圆角半径以实现圆形
+      backgroundColor: '#AABBCC',
+    },
+  },
+  // {
+  //   key: 'graph-2',
+  //   name: '三角形',
+  //   value: '',
+  //   style: {
+  //     ...defaultStyle,
+  //     width: '0',
+  //     height: '0',
+  //     borderLeft: '50px solid transparent',
+  //     borderRight: '50px solid transparent',
+  //     borderBottom: '100px solid #f00',
+  //   },
+  // },
 ]
 
 const GraphSidebar = () => {
@@ -37,14 +63,20 @@ const GraphSidebar = () => {
           key={item.value}
           onClick={() => addComponent({ ...item, type })}
           onDragStart={(e) => {
-            e.dataTransfer.setData('drag-component', JSON.stringify({ ...item, type }))
+            e.dataTransfer.setData(
+              'drag-component',
+              JSON.stringify({ ...item, type }),
+            )
           }}
           className=" px-14 py-4 text-white hover:bg-primary-grey-200"
           color="none"
         >
-          <div draggable={true} className="flex h-full w-full items-center gap-3">
+          <div
+            draggable={true}
+            className="flex h-full w-full items-center gap-3"
+          >
             <PiRectangleLight size={25} />
-            矩形
+            {item.name}
           </div>
         </Menu.Item>
       ))}

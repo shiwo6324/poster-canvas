@@ -136,11 +136,12 @@ const Canvas = () => {
         ref={divRef}
         onDrop={onDrop}
         onDragOver={(e) => e.preventDefault()}
-        className="org   relative    self-start  shadow-xl"
+        className="org   relative    self-start  "
         style={{
           ...canvas.content.style,
           transformOrigin: '50% 0%',
           transform: `scale(${zoom / 100})`,
+          boxShadow: '#C4D3ED 1px 1px 10px 5px',
         }}
       >
         <EditArea canvasStyle={canvas.content.style} />

@@ -11,7 +11,71 @@ const defaultStyle: React.CSSProperties = {
 
 const settings = [
   {
-    value: 'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-7.png',
+    value: '../../../public/canvas/bg1.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/bg2.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/certificate.jpg',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/chuliu.jpeg',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/girl.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/green-learning.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/icon.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/lock.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/rainbow1.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/react-head.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/red-girl.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/rinbbon1.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/sale.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/star1.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/star2.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/tree.png',
+    style: defaultStyle,
+  },
+  {
+    value: '../../../public/canvas/yellow-star.png',
     style: defaultStyle,
   },
 ]
@@ -21,29 +85,29 @@ const ImageSidebar = () => {
 
   if (type !== CompType.IMAGE) return null
   return (
-    <Grid columns={8} p={10} className="z-50 h-full shadow-xl">
+    <div className="custom-scrollbar z-50 flex h-[600px] flex-col  gap-3 overflow-y-scroll py-4">
       {settings.map((item) => (
-        <Grid.Col
-          span={4}
+        <div
           key={item.value}
           onClick={() => addComponent({ ...item, type })}
           onDragStart={(e) => {
-            e.dataTransfer.setData('drag-component', JSON.stringify({ ...item, type }))
+            e.dataTransfer.setData(
+              'drag-component',
+              JSON.stringify({ ...item, type }),
+            )
           }}
         >
-          <Box
+          <div
             draggable={true}
-            w={125}
-            h={100}
             className="flex cursor-pointer 
                    items-center justify-center border border-solid
                     border-slate-300 hover:border-amber-300 hover:text-amber-300"
           >
             <Image src={item.value} w={125} h={100} />
-          </Box>
-        </Grid.Col>
+          </div>
+        </div>
       ))}
-    </Grid>
+    </div>
   )
 }
 
