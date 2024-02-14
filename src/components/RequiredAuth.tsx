@@ -1,8 +1,9 @@
-import Login from './Login'
+import Login from './Auth'
 import { Outlet, useLocation } from 'react-router-dom'
 import { AppShell, Group } from '@mantine/core'
 import React from 'react'
 import CanvasHeader from './canvas-header'
+import Auth from './Auth'
 
 const RequiredAuth = () => {
   const location = useLocation()
@@ -20,7 +21,7 @@ const RequiredAuth = () => {
       <AppShell.Header>
         <Group h="100%" px="md">
           {isEditPage && <CanvasHeader />}
-          {!isEditPage && <Login />}
+          {!isEditPage && <Auth />}
         </Group>
       </AppShell.Header>
 

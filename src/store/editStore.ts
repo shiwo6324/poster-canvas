@@ -12,6 +12,7 @@ import { enableMapSet } from 'immer'
 import { cloneDeep } from 'lodash'
 import { CompType } from '../types/const'
 import { useEditAreaStyle } from '../hooks/useEditAreaStyle'
+import { EditStoreStoreType } from '../vite-env'
 
 enableMapSet()
 
@@ -398,7 +399,7 @@ export const copyComponents = () => {
       // 组合组件
       if (componentToCopy.type === CompType.GROUP) {
         componentToCopy.groupComponentKeys = []
-        component.groupComponentKeys?.forEach((key: number) => {
+        component.groupComponentKeys?.forEach((key: string) => {
           const childIndex = map.get(key)
           const childComponent = setCopiedComponentPosition(
             state.canvas.content.components[childIndex],
@@ -433,7 +434,7 @@ export const deleteComponents = () => {
     state.selectedComponents.forEach((index) => {
       const component = state.canvas.content.components[index]
       if (component.type === CompType.GROUP) {
-        component.groupComponentKeys?.forEach((key: number) => {
+        component.groupComponentKeys?.forEach((key: string) => {
           newSelectedComponents.add(map.get(key))
         })
       }
@@ -450,7 +451,7 @@ export const deleteComponents = () => {
         const groupIndex = map.get(child.groupKey)
         const group = state.canvas.content.components[groupIndex]
         const newSelectedComponents: Set<number> = new Set()
-        group.groupComponentKeys?.forEach((key: number) => {
+        group.groupComponentKeys?.forEach((key: string) => {
           if (key !== child.key) {
             newSelectedComponents.add(map.get(key))
           }
@@ -669,7 +670,7 @@ export const updateSelectedComponentsPosition = (position: {
       const component = components[index]
 
       if (component.type === CompType.GROUP) {
-        component.groupComponentKeys?.forEach((key: number) => {
+        component.groupComponentKeys?.forEach((key: string) => {
           newSelectedComponents.add(map.get(key))
         })
       }
@@ -712,7 +713,7 @@ export const updateSelectedComponentsPosition = (position: {
         const groupIndex = map.get(component.groupKey)
         const group = components[groupIndex]
         const newSelectedComponents: Set<number> = new Set()
-        group.groupComponentKeys?.forEach((key: number) => {
+        group.groupComponentKeys?.forEach((key: string) => {
           newSelectedComponents.add(map.get(key))
         })
         Object.assign(
@@ -889,7 +890,7 @@ export const groupSelectedComponents = () => {
       const component = components[index]
       // 如果组件本身是组合组件，遍历查找该组合组件的子组件
       if (component.type === CompType.GROUP) {
-        component.groupComponentKeys?.forEach((key: number) => {
+        component.groupComponentKeys?.forEach((key: string) => {
           const childIndex = map.get(key)
           const child = components[childIndex]
           groupComponent.groupComponentKeys?.push(child.key)
@@ -937,7 +938,7 @@ export const cancelGroupSelectedComponents = () => {
     const newSelectedComponents: Set<number> = new Set()
     const selectedComponentIndex = [...state.selectedComponents][0]
     const selectedGroup = components[selectedComponentIndex]
-    selectedGroup.groupComponentKeys?.forEach((key: number) => {
+    selectedGroup.groupComponentKeys?.forEach((key: string) => {
       const componentIndex = map.get(key)
       const component = components[componentIndex]
       component.groupKey = undefined

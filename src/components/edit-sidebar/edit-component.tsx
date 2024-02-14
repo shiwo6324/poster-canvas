@@ -18,7 +18,7 @@ import {
   pageAlignOptions,
   textAlignOptions,
   textDecorationOptions,
-} from '@/src/constants'
+} from '@/src/components/constants'
 import CSelect from '../input/Select'
 type StyleItem = { name: string; value: string | number }
 type StyleInput = StyleItem | StyleItem[]

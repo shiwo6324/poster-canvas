@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+import { ICanvas } from './types/editStoreTypes'
+
 type CanvasRefStoreType = {
   canvasContainer: HTMLDivElement
 }

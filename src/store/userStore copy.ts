@@ -3,20 +3,14 @@ import { immer } from 'zustand/middleware/immer'
 
 interface UserState {
   isLogin: boolean
-  token: string
+  name: string
 }
 
 const useUserStore = create<UserState>()(
   immer(() => ({
     isLogin: false as boolean,
-    token: '',
+    name: '',
   })),
 )
-
-export const setUserToken = (token: string) => {
-  useUserStore.setState((state) => {
-    state.token = token
-  })
-}
 
 export default useUserStore
