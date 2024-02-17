@@ -1,11 +1,5 @@
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-} from 'axios'
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios'
 import useUserStore from '../store/userStore'
-import docCookies from './cookies'
 
 // import { getToken } from '@/utils/auth'
 
@@ -25,7 +19,7 @@ request.interceptors.request.use(
       // 每个请求都携带 token
       // ['X-Token'] 是自定义 headers 键
       // 请根据实际情况修改它
-      config.headers['X-Token'] = docCookies.getItem('token')
+      config.headers['Authorization'] = useUserStore.getState().token
     }
     return config
   },

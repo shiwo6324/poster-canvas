@@ -17,35 +17,53 @@ import {
 } from 'src/store/editStore'
 import { toast } from 'sonner'
 import { resetZoom } from '../store/zoom-store'
+import request from '../utils/request'
+import useUserStore from '../store/userStore'
 
 const CanvasHeader = () => {
   const { canvas, hasSaved } = useEditStore()
+  const { token } = useUserStore()
   const navigate = useNavigate()
   const id = useCanvasId()
   const type = useCanvasType()
-  unstable_usePrompt({
-    when: !hasSaved,
-    message: '离开后数据将不会被保存，确认要离开吗？',
-  })
+  // unstable_usePrompt({
+  //   when: !hasSaved,
+  //   message: '离开后数据将不会被保存，确认要离开吗？',
+  // })
 
   const handleSaveCanvas = async () => {
     const isNew = canvas.id == null
-    await saveCanvas(
-      {
-        id,
-        content: JSON.stringify(canvas),
-        type: type,
-        title: canvas.title,
-      },
-      (_id) => {
-        if (isNew) {
-          updateCanvasId(_id)
-          navigate(`/edit?id=${_id}`)
-        }
-        toast.success('保存成功')
-        setSaveCanvas(true)
-      },
-    )
+    console.log(canvas, '123')
+
+    const data = await request.post('api/canvas/save', {
+      id: canvas.id,
+      content: JSON.stringify(canvas.content),
+      type: type,
+      title: canvas.title,
+    })
+
+    if (isNew) {
+      updateCanvasId(data.id)
+      navigate(`/edit?id=${data.id}`)
+    }
+    toast.success('保存成功')
+    setSaveCanvas(true)
+    // await saveCanvas(
+    //   {
+    //     id,
+    //     content: JSON.stringify(canvas),
+    //     type: type,
+    //     title: canvas.title,
+    //   },
+    //   (_id) => {
+    //     if (isNew) {
+    //       updateCanvasId(_id)
+    //       navigate(`/edit?id=${_id}`)
+    //     }
+    //     toast.success('保存成功')
+    //     setSaveCanvas(true)
+    //   },
+    // )
   }
 
   const handleSaveAndPreview = async () => {

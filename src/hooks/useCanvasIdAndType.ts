@@ -10,5 +10,5 @@ export function useCanvasId() {
 export function useCanvasType() {
   const [params] = useSearchParams()
   const type = params.get('type')
-  return type || 'content'
+  return type || 'CONTENT'
 }

@@ -1,9 +1,9 @@
-import { useZoomStore } from 'src/store/zoom-store'
+import { setZoom, useZoomStore, zoomIn, zoomOut } from 'src/store/zoom-store'
 import { GoZoomIn, GoZoomOut } from 'react-icons/go'
 import { Tooltip } from '@mantine/core'
 
 const Zoom = () => {
-  const { zoomIn, zoomOut, setZoom, zoom } = useZoomStore()
+  const { zoom } = useZoomStore()
 
   return (
     <div className="absolute right-96  top-20 flex items-center space-x-2">

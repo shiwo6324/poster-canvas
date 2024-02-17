@@ -20,7 +20,7 @@ const initEditStoreState: EditStoreStoreType = {
   canvas: {
     id: undefined as any,
     title: '未命名',
-    type: 'content' as any,
+    type: 'CONTENT' as any,
     content: getDefaultCanvasContent(),
   },
 
@@ -29,7 +29,7 @@ const initEditStoreState: EditStoreStoreType = {
       canvas: {
         id: undefined as any,
         title: '未命名',
-        type: 'content' as any,
+        type: 'CONTENT' as any,
         content: getDefaultCanvasContent(),
       },
 

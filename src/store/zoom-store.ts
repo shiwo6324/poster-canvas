@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
+import { ZoomStoreType } from '../vite-env'
 
 const initZoomState: ZoomStoreType = {
   zoom: 100,

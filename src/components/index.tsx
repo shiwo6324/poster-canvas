@@ -21,6 +21,7 @@ import Zoom from './canvas/components/zoom'
 import { resetZoom, useZoomStore, zoomIn, zoomOut } from 'src/store/zoom-store'
 import { setCanvasContainer } from '../store/canvasRefStore'
 import { IComponentWithKey } from '../types/editStoreTypes'
+import request from '../utils/request'
 
 const Canvas = () => {
   const { canvas, selectedComponents } = useEditStore()
@@ -53,25 +54,34 @@ const Canvas = () => {
   ])
   const fetchCanvas = async () => {
     if (id) {
-      await getCanvas(
-        id,
-        (res: any) => {
-          const content = JSON.parse(res.content)
+      const { canvas } = await request.get(`api/canvas/${id}`)
 
-          setCanvas({
-            ...content,
-            title: res.title,
-            type: res.type,
-            id: res.id,
-          })
-          resetCanvasChangeHistory()
-        },
-        () => {
-          toast.error('获取数据失败')
-        },
-      )
+      setCanvas({
+        content: JSON.parse(canvas.content),
+        title: canvas.title,
+        type: canvas.type,
+        id: canvas.id,
+      })
+      resetCanvasChangeHistory()
+      // await getCanvas(
+      //   id,
+      //   (res: any) => {
+      //     const content = JSON.parse(res.content)
+
+      //     setCanvas({
+      //       ...content,
+      //       title: res.title,
+      //       type: res.type,
+      //       id: res.id,
+      //     })
+      //     resetCanvasChangeHistory()
+      //   },
+      //   () => {
+      //     toast.error('获取数据失败')
+      //   },
+      // )
     }
-    clearCanvas()
+    // clearCanvas()
     resetZoom()
   }
 

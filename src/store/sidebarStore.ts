@@ -1,6 +1,7 @@
-import { CompType } from 'src/types/const'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
+import { SidebarStoreType } from '../vite-env'
+import { CompType } from '../types/const'
 
 const initSidebarState: SidebarStoreType = {
   type: CompType.EMPTY,

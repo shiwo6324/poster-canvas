@@ -4,14 +4,13 @@ import Sidebar from '@/src/components/left-sidebar'
 
 import { setSelectedComponent, useEditStore } from 'src/store/editStore'
 import { useZoomStore } from 'src/store/zoom-store'
-import { useSidebarTypeStore } from '@/src/store/sidebarStore'
+import { setSidebarType } from '@/src/store/sidebarStore'
 import { CompType } from '@/src/types/const'
 import EditSidebar from '@/src/components/edit-sidebar'
 
 const EditPage = () => {
   const { canvas } = useEditStore()
   const { zoom } = useZoomStore()
-  const { setType } = useSidebarTypeStore()
 
   return (
     <div>
@@ -26,7 +25,7 @@ const EditPage = () => {
               (zoom / 100) * (canvas.content.style.height as number) + 100,
           }}
           onClick={(e: any) => {
-            setType(CompType.EMPTY)
+            setSidebarType(CompType.EMPTY)
             if (e.target.id === 'container') {
               setSelectedComponent(-1)
             }

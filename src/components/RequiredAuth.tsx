@@ -6,12 +6,12 @@ import CanvasHeader from './canvas-header'
 import Auth from './Auth'
 
 const RequiredAuth = () => {
-  const location = useLocation()
-  const [isEditPage, setIsEditPage] = React.useState(false)
-  React.useEffect(() => {
-    const isEdit = location.pathname.split('/').includes('edit')
-    setIsEditPage(isEdit)
-  }, [])
+  // const location = useLocation()
+  // const [isEditPage, setIsEditPage] = React.useState(false)
+  // React.useEffect(() => {
+  //   const isEdit = location.pathname.split('/').includes('edit')
+  //   setIsEditPage(isEdit)
+  // }, [])
   return (
     <AppShell
       header={{ height: 60 }}
@@ -20,8 +20,8 @@ const RequiredAuth = () => {
     >
       <AppShell.Header>
         <Group h="100%" px="md">
-          {isEditPage && <CanvasHeader />}
-          {!isEditPage && <Auth />}
+          <CanvasHeader />
+          <Auth />
         </Group>
       </AppShell.Header>
 
