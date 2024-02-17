@@ -4,6 +4,7 @@ import { deleteCanvas, getCanvasList, saveAsTemplate } from 'src/request/canvas'
 import { logout } from 'src/request/logout'
 import { Box, Button, Table } from '@mantine/core'
 import docCookies from 'src/utils/cookies'
+import request from '@/src/utils/request'
 
 export interface ListItem {
   id: string
@@ -12,8 +13,6 @@ export interface ListItem {
   content: string
 }
 const ListPage = () => {
-  const username = docCookies.getItem('name')
-
   const navigate = useNavigate()
   const logout = () => {
     docCookies.removeItem('sessionId')
@@ -23,13 +22,15 @@ const ListPage = () => {
   }
 
   const [list, setList] = React.useState<ListItem[]>([])
-  const fresh = () => {
-    getCanvasList('', (res: any) => {
-      const data = res.content || []
-      // 不让用户编辑这三个模板页
-      // data = data.filter((item: ICmp) => item.id !== 2 && item.id !== 30 && item.id !== 31)
-      setList(data)
-    })
+  const fresh = async () => {
+    const { canvasListData } = await request.get('/api/canvas/canvasList')
+    setList(canvasListData)
+    // getCanvasList('', (res: any) => {
+    //   const data = res.content || []
+    //   // 不让用户编辑这三个模板页
+    //   // data = data.filter((item: ICmp) => item.id !== 2 && item.id !== 30 && item.id !== 31)
+    //   setList(data)
+    // })
   }
   React.useEffect(() => {
     fresh()
@@ -42,7 +43,7 @@ const ListPage = () => {
     })
   }
   const handleEditPage = (item: ListItem) => {
-    const url = `/edit?id=${item.id}&type=${item.type}`
+    const url = `/edit?id=${item.id}`
     navigate(url)
   }
   const handleSaveTemplage = (item: ListItem) => {
@@ -52,7 +53,7 @@ const ListPage = () => {
     })
   }
   const rows = list.map((element) => (
-    <Table.Tr key={element.id}>
+    <Table.Tr key={element.id} className="text-primary-grey-300">
       <Table.Td>{element.id}</Table.Td>
       <Table.Td>{element.title}</Table.Td>
       <Table.Td>{element.type === 'content' ? '页面' : '模板页'}</Table.Td>
@@ -102,7 +103,7 @@ const ListPage = () => {
   return (
     <Table>
       <Table.Thead>
-        <Table.Tr>
+        <Table.Tr className="border-none text-primary-grey-300">
           <Table.Th>id</Table.Th>
           <Table.Th>标题</Table.Th>
           <Table.Th>类型</Table.Th>

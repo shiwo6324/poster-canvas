@@ -11,17 +11,17 @@ import {
   setSelectedComponent,
   useEditStore,
 } from 'src/store/editStore'
-import CanvasItem from './canvas/components/canvas-item'
+import CanvasItem from './components/canvas-item'
 import { toast } from 'sonner'
 import { getCanvas } from 'src/request/canvas'
 import { useCanvasId } from 'src/hooks/useCanvasIdAndType'
 import { useClickOutside, useHotkeys } from '@mantine/hooks'
-import EditArea from './canvas/components/edit-area'
-import Zoom from './canvas/components/zoom'
+import EditArea from './components/edit-area'
+import Zoom from './components/zoom'
 import { resetZoom, useZoomStore, zoomIn, zoomOut } from 'src/store/zoom-store'
-import { setCanvasContainer } from '../store/canvasRefStore'
-import { IComponentWithKey } from '../types/editStoreTypes'
-import request from '../utils/request'
+import { setCanvasContainer } from '../../store/canvasRefStore'
+import { IComponentWithKey } from '../../types/editStoreTypes'
+import request from '../../utils/request'
 
 const Canvas = () => {
   const { canvas, selectedComponents } = useEditStore()
@@ -124,7 +124,7 @@ const Canvas = () => {
     // 这样做可以确保元素在被拖放时，是以其中心位置对齐鼠标的当前位置。
 
     draggedElement.style.left = disX - draggedElement.style.width / 2
-    draggedElement.style.top = disY - draggedElement.style.height / 2
+    draggedElement.style.top = disY - draggedElement.style?.height / 2
 
     addComponent(draggedElement)
   }

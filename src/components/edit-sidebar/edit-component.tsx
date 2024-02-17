@@ -280,7 +280,7 @@ const EditComponent = ({ component }: { component: IComponent }) => {
             withPicker={false}
             defaultValue={borderColor}
             onChange={(color) => {
-              handleUpdateStyleProps({ name: 'backgroundColor', value: color })
+              handleUpdateStyleProps({ name: 'borderColor', value: color })
             }}
             swatches={[
               ...DEFAULT_THEME.colors.red,
@@ -291,7 +291,10 @@ const EditComponent = ({ component }: { component: IComponent }) => {
           <div className="flex gap-3">
             <CNumberInput
               onChange={(number) => {
-                handleUpdateStyleProps({ name: 'borderWidth', value: number })
+                handleUpdateStyleProps({
+                  name: 'borderWidth',
+                  value: `${number}px`,
+                })
               }}
               defaultValue={borderWidth as string}
             />

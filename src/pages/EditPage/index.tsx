@@ -1,5 +1,5 @@
 import { AppShell, Flex } from '@mantine/core'
-import Canvas from '@/src/components'
+import Canvas from '@/src/components/canvas'
 import Sidebar from '@/src/components/left-sidebar'
 
 import { setSelectedComponent, useEditStore } from 'src/store/editStore'

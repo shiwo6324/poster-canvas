@@ -2,7 +2,7 @@ import { AppShell, Tooltip } from '@mantine/core'
 import { BsFileEarmarkText } from 'react-icons/bs'
 import { MdOutlinePreview } from 'react-icons/md'
 import { TbArrowBack, TbArrowForward } from 'react-icons/tb'
-import { unstable_usePrompt, useNavigate } from 'react-router-dom'
+import { unstable_usePrompt, useLocation, useNavigate } from 'react-router-dom'
 import { useCanvasId, useCanvasType } from 'src/hooks/useCanvasIdAndType'
 import { FaTrashCan } from 'react-icons/fa6'
 
@@ -16,16 +16,18 @@ import {
   useEditStore,
 } from 'src/store/editStore'
 import { toast } from 'sonner'
-import { resetZoom } from '../store/zoom-store'
-import request from '../utils/request'
-import useUserStore from '../store/userStore'
+import { resetZoom } from '../../store/zoom-store'
+import request from '../../utils/request'
+import useUserStore from '../../store/userStore'
 
 const CanvasHeader = () => {
   const { canvas, hasSaved } = useEditStore()
   const { token } = useUserStore()
   const navigate = useNavigate()
   const id = useCanvasId()
+  const location = useLocation()
   const type = useCanvasType()
+
   // unstable_usePrompt({
   //   when: !hasSaved,
   //   message: '离开后数据将不会被保存，确认要离开吗？',
@@ -33,7 +35,6 @@ const CanvasHeader = () => {
 
   const handleSaveCanvas = async () => {
     const isNew = canvas.id == null
-    console.log(canvas, '123')
 
     const data = await request.post('api/canvas/save', {
       id: canvas.id,
