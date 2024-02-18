@@ -36,11 +36,9 @@ const ListPage = () => {
     fresh()
   }, [])
 
-  const del = (id: string) => {
-    deleteCanvas(id, () => {
-      alert('删除成功')
-      fresh()
-    })
+  const del = async (id: string) => {
+    await request.delete(`/api/canvas/${id}`)
+    fresh()
   }
   const handleEditPage = (item: ListItem) => {
     const url = `/edit?id=${item.id}`
@@ -67,12 +65,12 @@ const ListPage = () => {
               }}
               display={'flex '}
             >
-              <a
+              {/* <a
                 target="_blank"
                 href={'https://builder-lemon.vercel.app/?id=' + element.id}
               >
                 线上查看（切移动端）
-              </a>
+              </a> */}
               <Box
                 style={{
                   gap: '15px',
@@ -83,13 +81,13 @@ const ListPage = () => {
                 <Button size="xs" onClick={() => handleEditPage(element)}>
                   编辑
                 </Button>
-                <Button
+                {/* <Button
                   color="green"
                   size="xs"
                   onClick={() => handleSaveTemplage(element)}
                 >
                   保存为模板
-                </Button>
+                </Button> */}
                 <Button color="red" size="xs" onClick={() => del(element.id)}>
                   删除
                 </Button>

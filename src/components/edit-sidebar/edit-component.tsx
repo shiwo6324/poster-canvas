@@ -258,7 +258,7 @@ const EditComponent = ({ component }: { component: IComponent }) => {
                 onChange={(number) => {
                   handleUpdateStyleProps({
                     name: 'borderRadius',
-                    value: number,
+                    value: `${number}px`,
                   })
                 }}
                 defaultValue={borderRadius as string}
